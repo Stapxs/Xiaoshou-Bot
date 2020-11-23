@@ -53,7 +53,7 @@ object Options {
                 return opt.optValue
             }
         }
-        return "Err " + "没有找到这个设置项"
+        return "Err 没有找到这个设置项"
     }
 
     /**
@@ -101,6 +101,6 @@ object Options {
         catch (e: Throwable) {
             return "err " + e.message
         }
-        return "err " + "未知错误 > Options.tk"
+        return "Err 未知错误 > Options.tk"
     }
 }

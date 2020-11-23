@@ -7,11 +7,11 @@ import java.util.*
 
 object Log {
 
-    private val logList: Deque<String> = LinkedList()            // Log 队列
+    private var logList: Deque<String> = LinkedList()            // Log 队列
 
     /**
      * @Author Stapxs
-     * @Description //TODO 添加待输出的 Log
+     * @Description 添加待输出的 Log
      * @Date 下午 08:25 2020/11/22
      * @Param
      * @return
@@ -19,12 +19,13 @@ object Log {
     fun addLog(type: String, log: String) {
         val nowTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())
         val outString = "[$nowTime][$type] $log"
-        logList.add(outString)
+        logList.addFirst(outString)
+        // println("> 添加日志：$outString")
     }
 
     /**
      * @Author Stapxs
-     * @Description //TODO 日志写入服务
+     * @Description 日志写入服务
      * @Date 下午 08:29 2020/11/22
      * @Param
      * @return
@@ -47,24 +48,26 @@ object Log {
 
     /**
      * @Author Stapxs
-     * @Description //TODO 写入日志
+     * @Description 写入日志
      * @Date 下午 09:52 2020/11/22
      * @Param
      * @return
     **/
     fun writeLog()
     {
-        println(">> 开始输出日志")
+        println("> 开始输出日志")
         while (!exit)
         {
-            while (logList.peek() != null)
-            {
-                val log = logList.poll()
-                println(">> 输出日志$log")
-                File("LogNow.log").appendText("$log\n")
-            }
+            try {
+                val log = logList.last
+                if (log != null) {
+                    logList.removeLast()
+                    println("> 输出日志$log")
+                    File("LogNow.log").appendText("$log\n")
+                }
+            } catch (e: Throwable) {}
         }
-        println(">> 输出日志结束")
+        println("> 输出日志结束")
     }
 
     class CustomThread : Thread() {
@@ -73,4 +76,9 @@ object Log {
             writeLog()
         }
     }
+
+    fun printErr(errStr: String) {
+        println("ERR >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> $errStr")
+    }
+
 }
