@@ -76,4 +76,9 @@ object Log {
             writeLog()
         }
     }
+
+    fun printErr(errStr: String) {
+        println("ERR >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> $errStr")
+    }
+
 }
