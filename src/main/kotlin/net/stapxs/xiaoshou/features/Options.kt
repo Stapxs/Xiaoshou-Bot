@@ -40,6 +40,9 @@ object Options {
                     }
                 }
             }
+            // 初始化 GroupList
+            GroupList.initGroupList()
+
             return true
         }
         catch (e: Throwable) {
@@ -53,7 +56,7 @@ object Options {
                 return opt.optValue
             }
         }
-        return "Err 没有找到这个设置项"
+        return "Err"
     }
 
     /**
