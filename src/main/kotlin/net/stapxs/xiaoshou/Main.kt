@@ -16,7 +16,7 @@ val reader = Scanner(System.`in`)
 var exit = false
 
 
-suspend fun main() {
+fun main() {
     // 初始化日志输出
     Log.logSaver()
     Log.addLog("log", "Log 输出系统初始化完成！")
@@ -28,4 +28,5 @@ suspend fun main() {
         exit = true
         exitProcess(-1)
     }
+    Log.addLog("log", "设置读取初始化完成！")
 }
