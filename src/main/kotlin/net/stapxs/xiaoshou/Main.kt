@@ -23,7 +23,6 @@ suspend fun main() {
     // 开始初始化
     startTime = System.currentTimeMillis()
     Log.addLog("core", "开始初始化……")
-
     // 初始化日志输出
     Log.logSaver()
     Log.addLog("log", "Log 输出系统初始化完成！")
@@ -66,7 +65,6 @@ suspend fun main() {
     // 启动远程控制台事件处理
 
     // 启动控制台事件处理
-
     while (!exit){
 
     }
