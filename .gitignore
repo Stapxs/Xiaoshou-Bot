@@ -13,6 +13,8 @@ gradle-app.setting
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
 
+# 这是调试中在根目录生成的文件，不需要上传
 LogNow.log
 Options.ini
 device.json
+PicsCache

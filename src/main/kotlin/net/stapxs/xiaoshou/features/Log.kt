@@ -66,6 +66,7 @@ object Log {
                     File("LogNow.log").appendText("$log\n")
                 }
             } catch (e: Throwable) {}
+            Thread.sleep(1000)
         }
         println("> 输出日志结束")
     }
