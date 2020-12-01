@@ -25,23 +25,31 @@ object Monitor {
         // 群组
         miraiBot.subscribeAlways<GroupMessageEvent> { event ->
             if(run) {
+                var get = false
                 val msg = event.message.content
                 when(msg.substring(0,1)) {
                     "/" -> {
+                        get = true
                         Migrate.at(event,"/", msg.substring(1))
                     }
                     "." -> {
+                        get = true
                         Migrate.at(event,".", msg.substring(1))
                     }
                     "。" -> {
+                        get = true
                         Migrate.at(event,".", msg.substring(1))
                     }
                 }
-                if(msg.indexOf(":") >= 0 && msg.indexOf("\n") < 0) {
-                    Migrate.at(event,":", msg.substring(0, msg.indexOf(":"))
-                            + "|" + msg.substring(msg.indexOf(":" + 1)))
+                try {
+                    if (msg.indexOf(":") >= 0 && msg.indexOf("\n") < 0) {
+                        get = true
+                        Migrate.at(event, ":", msg)
+                    }
+                } catch (e: Throwable) { Log.addLog("xiaoshou", "处理 指令 : 出现错误 -> $e") }
+                if(!get) {
+                    Migrate.at(event, "&", msg)
                 }
-                Migrate.at(event,"&", msg)
             }
         }
 
@@ -71,6 +79,11 @@ object Monitor {
                     ) {
                         reply(sender.nick + event.message.content[2])
                     }
+                    else if (event.message.content[2] == '~' &&
+                        event.message.content.length == 3
+                    ) {
+                        reply(sender.nick + event.message.content[2] + " 要抱抱 ——")
+                    }
                 }
             } catch (e: Throwable) { }
         }
@@ -91,11 +104,11 @@ object Monitor {
             }
             if(!doAt && event != null){
                 bot.groups[id].sendMessage(event.message.quote() + msg)
-                Log.addLog("xiaoshou", "$id (Group) <- [Quote - \"${event.sender.id}]${msg.replace("\n", " \\n ")}\"")
+                Log.addLog("xiaoshou", "$id (Group) <- [Quote - ${event.sender.id}] \"${msg.replace("\n", " \\n ")}\"")
             }
             if(doAt && at != 0L) {
                 bot.groups[id].sendMessage(At(bot.groups[id].members[at]) + msg)
-                Log.addLog("xiaoshou", "$id (Group) <- \"[At - $at]${msg.replace("\n", " \\n ")}\"")
+                Log.addLog("xiaoshou", "$id (Group) <- [At - $at] \"${msg.replace("\n", " \\n ")}\"")
             }
         } else {
 

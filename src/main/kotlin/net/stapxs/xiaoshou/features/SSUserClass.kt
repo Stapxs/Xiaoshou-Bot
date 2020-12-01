@@ -127,4 +127,39 @@ object SSUserClass {
         return sdf.format(Date())
     }
 
+    /**
+     * @Author Stapxs
+     * @Description 获取标准格式的日期
+     * @Date 下午 05:07 2020/12/1
+     * @Param
+     * @return
+    **/
+    fun getDayList(): List<String> {
+        val sdf = SimpleDateFormat("yyyy-MM-dd")
+        return sdf.format(Date()).split("-")
+    }
+
+    /**
+     * @Author Stapxs
+     * @Description 在字符串列表里瞎几把抽一个
+     * @Date 下午 05:09 2020/12/1
+     * @Param
+     * @return
+    **/
+    fun getOne(listIn: List<String>): String {
+        return listIn[(0 until listIn.count()).random()]
+    }
+
+    /**
+     * @Author Stapxs
+     * @Description 获取小时
+     * @Date 下午 05:12 2020/12/1
+     * @Param
+     * @return
+    **/
+    fun getTimeH(): String {
+        val sdf = SimpleDateFormat("HH")
+        return sdf.format(Date())
+    }
+
 }
