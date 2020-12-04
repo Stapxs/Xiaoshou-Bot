@@ -35,6 +35,5 @@ suspend fun OtherJump(event: GroupMessageEvent) {
     }
 
     // 机器人
-    Log.addLog("debug", event.message[At].toString())
     if(CommandList.hasAuthority("&", "机器人", event.group.id) && event.message[At].toString() != "null"){noBot(event);return}
 }
