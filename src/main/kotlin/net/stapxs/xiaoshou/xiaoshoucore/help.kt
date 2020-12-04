@@ -8,7 +8,6 @@ suspend fun sendHelp(id: Long, command: String) {
             if (com.comName == command) {
                 if (com.comDescription != "") {
                     Monitor.messageSender("Group", id, com.comDescription)
-                    return
                 } else {
                     Monitor.messageSender("Group", id, "这个指令没有提示欸")
                     return
