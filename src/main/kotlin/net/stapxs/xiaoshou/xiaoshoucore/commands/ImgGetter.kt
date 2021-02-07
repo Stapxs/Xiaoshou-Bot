@@ -1,9 +1,9 @@
 package net.stapxs.xiaoshou.xiaoshoucore.commands
 
-import net.mamoe.mirai.message.GroupMessageEvent
+import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.stapxs.xiaoshou.features.Log
 import net.stapxs.xiaoshou.features.SSUserClass
-import net.stapxs.xiaoshou.xiaoshoucore.Monitor
+import net.stapxs.xiaoshou.xiaoshoucore.Xiaoshou
 import java.io.File
 
 object ImgGetter {
@@ -16,14 +16,14 @@ object ImgGetter {
         try {
             val time = SSUserClass.getTimeAdd()
             if(msg != "") {
-                Monitor.messageSender("Group", groupId, msg)
+                Xiaoshou.sendMessage("Group", msg ,event)
             }
             SSUserClass.downloadImg(url, "PicsCache/$time")
-            Monitor.imangeSender("Group", groupId, File("PicsCache/$time"))
+            Xiaoshou.imangeSender("Group", File("PicsCache/$time") ,event)
             File("PicsCache/$time").delete()
         }
         catch (e: Throwable) {
-            Monitor.messageSender("Group", groupId, "获取错误：\n" + e.message)
+            Xiaoshou.sendMessage("Group", "获取错误：\n" + e.message ,event)
             Log.addLog("xiaoshou", "图片服务器出了点问题：$e")
         }
     }

@@ -1,29 +1,28 @@
 package net.stapxs.xiaoshou.xiaoshoucore
 
 import net.mamoe.mirai.Bot
-import net.mamoe.mirai.event.subscribeAlways
-import net.mamoe.mirai.message.GroupMessageEvent
-import net.mamoe.mirai.message.MessageEvent
+import net.mamoe.mirai.contact.Contact.Companion.sendImage
+import net.mamoe.mirai.event.events.GroupMessageEvent
+import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.data.At
+import net.mamoe.mirai.message.data.MessageSource.Key.quote
 import net.mamoe.mirai.message.data.content
-import net.mamoe.mirai.message.data.quote
-import net.mamoe.mirai.message.sendImage
 import net.stapxs.xiaoshou.features.Log
 import net.stapxs.xiaoshou.features.Options
 import java.io.File
 
-object Monitor {
+object Xiaoshou {
 
-    lateinit var bot: Bot
+    private lateinit var bot: Bot
 
-    fun XiaoshouCore(miraiBot: Bot) {
+    fun xiaoshouCore(miraiBot: Bot) {
         bot = miraiBot
         println("> 开始监听消息……")
         Log.addLog("xiaoshou", "你好人类，这是我插入在 Core Log 中的日志！如果有什么问题的话，可以看“xiaoshou”开头的日志哦")
         Log.addLog("xiaoshou", "开始监听消息……")
-        var run = true;
+        var run = true
         // 群组
-        miraiBot.subscribeAlways<GroupMessageEvent> { event ->
+        miraiBot.eventChannel.subscribeAlways<GroupMessageEvent> { event ->
             if(run) {
                 var get = false
                 val msg = event.message.content
@@ -54,19 +53,20 @@ object Monitor {
         }
 
         // 全局
-        miraiBot.subscribeAlways<MessageEvent> { event ->
+        miraiBot.eventChannel.subscribeAlways<MessageEvent> { event ->
             val msg = event.message.content
             if(msg.contains("休息啦") || msg.contains("干活啦")) {
                 if (Options.getOpt("masterID") != "Err") {
                     if (msg.contains("休息啦") && event.sender.id == Options.getOpt("masterID").toLong()) {
-                        miraiBot.friends[Options.getOpt("masterID").toLong()].sendMessage("好的 ——")
-                        run = false;
+                        subject.sendMessage("好的 ——")
+                        run = false
                     }
                     if (msg.contains("干活啦") && event.sender.id == Options.getOpt("masterID").toLong()) {
-                        miraiBot.friends[Options.getOpt("masterID").toLong()].sendMessage("好的 ——")
-                        run = true;
+                        subject.sendMessage("好的 ——")
+                        run = true
                     }
                 } else {
+                    subject.sendMessage("Err > Options Null master")
                     Log.addLog("xiaoshou", "没有找到主人 > Options Null master")
                 }
             }
@@ -77,12 +77,12 @@ object Monitor {
                     if ((event.message.content[2] == '!' || event.message.content[2] == '！') &&
                         event.message.content.length == 3
                     ) {
-                        reply(sender.nick + event.message.content[2])
+                        subject.sendMessage(sender.nick + event.message.content[2])
                     }
                     else if (event.message.content[2] == '~' &&
                         event.message.content.length == 3
                     ) {
-                        reply(sender.nick + event.message.content[2] + " 要抱抱 ——")
+                        subject.sendMessage(sender.nick + event.message.content[2] + " 要抱抱 ——")
                     }
                 }
             } catch (e: Throwable) { }
@@ -92,42 +92,37 @@ object Monitor {
     /**
      * @Author Stapxs
      * @Description 发送消息，支持 At, Quote
-     * @Date 下午 07:56 2020/11/23
+     * @Date 下午 07:56 2020/11/23 (下午 02:11 2021/2/7)
      * @Param
      * @return
     **/
-    suspend fun messageSender(type: String, id: Long, msg: String, at: Long = 0L, event: GroupMessageEvent? = null, doAt: Boolean = false) {
+    suspend fun sendMessage(type: String, msg: String, event: GroupMessageEvent, doAt: Boolean = false, doQuote: Boolean = false) {
+        val msgLogout = msg.replace("\n", " \\n ")
         if(type == "Group") {
-            if(at == 0L && event == null) {
-                bot.groups[id].sendMessage(msg)
-                Log.addLog("xiaoshou", "$id (Group) <- \"${msg.replace("\n", " \\n ")}\"")
+            if(doAt) {
+                event.group.sendMessage(At(event.sender) + msg)
+                Log.addLog("xiaoshou", "${event.group.id} (Group) <- [Quote - ${event.sender.id}] \"$msgLogout\"")
+            } else if(doQuote) {
+                event.group.sendMessage(event.message.quote() + msg)
+                Log.addLog("xiaoshou", "${event.group.id} (Group) <- [Quote - ${event.sender.id}] \"$msgLogout\"")
+            } else {
+                event.group.sendMessage(msg)
+                Log.addLog("xiaoshou", "${event.group.id} (Group) <- \"$msgLogout\"")
             }
-            if(!doAt && event != null){
-                bot.groups[id].sendMessage(event.message.quote() + msg)
-                Log.addLog("xiaoshou", "$id (Group) <- [Quote - ${event.sender.id}] \"${msg.replace("\n", " \\n ")}\"")
-            }
-            if(doAt && at != 0L) {
-                bot.groups[id].sendMessage(At(bot.groups[id].members[at]) + msg)
-                Log.addLog("xiaoshou", "$id (Group) <- [At - $at] \"${msg.replace("\n", " \\n ")}\"")
-            }
-        } else {
-
         }
     }
 
     /**
      * @Author Stapxs
      * @Description 发送图片
-     * @Date 下午 07:57 2020/11/23
+     * @Date 下午 07:57 2020/11/23 (下午 02:27 2021/2/7)
      * @Param
      * @return
     **/
-    suspend fun imangeSender(type: String, id: Long, img: File) {
+    suspend fun imangeSender(type: String, img: File, event: GroupMessageEvent) {
         if(type == "Group") {
-            Log.addLog("xiaoshou", "$id (Group) <- [Image]${img}")
-            bot.groups[id].sendImage(img)
-        } else {
-
+            Log.addLog("xiaoshou", "${event.group.id} (Group) <- [Image]${img}")
+            event.group.sendImage(img)
         }
     }
 

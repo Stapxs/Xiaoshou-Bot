@@ -1,6 +1,6 @@
 package net.stapxs.xiaoshou.xiaoshoucore
 
-import net.mamoe.mirai.message.GroupMessageEvent
+import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.stapxs.xiaoshou.features.Log
 import net.stapxs.xiaoshou.xiaoshoucore.commands.*
 
@@ -21,9 +21,9 @@ object Migrate {
                         when (topCommand) {
                             // "wiki" -> WIKI.wikiMain()
                             "getpic" -> ImgGetter.DownloadASend(event, msg[0], "正在和图片服务器交涉……")
-                            "say" -> Monitor.messageSender("Group", event.group.id, ((msg.toString()).substring(1, (msg.toString()).length - 1)).replace(", ", " "))
-                            "help" -> sendHelp(event.group.id, msg[0])
-                            "?" -> sendHelp(event.group.id, msg[0])
+                            "say" -> Xiaoshou.sendMessage("Group", ((msg.toString()).substring(1, (msg.toString()).length - 1)).replace(", ", " "), event)
+                            "help" -> sendHelp(event, msg[0])
+                            "?" -> sendHelp(event, msg[0])
                         }
                     }
                     "." -> {
@@ -31,16 +31,16 @@ object Migrate {
                             "cat" -> ImgGetter.DownloadASend(event, "https://thiscatdoesnotexist.com", "正在给猫猫小鱼干……")
                             "dog" -> ImgGetter.DownloadASend(event, "https://dog.ceo/api/breeds/image/random", "正在给狗砸撒狗粮……")
                             "fox" -> ImgGetter.DownloadASend(event, "https://foxrudor.de", "正在偷偷靠近狐狸……")
-                            "runInfo" -> RunInfo(event.group.id)
-                            "林槐语录" -> {val ana = SSAna.getSSAna();Monitor.messageSender("Group", event.group.id, "> 林槐语录：${ana[1]}\n━━━━━━━━━━━━\n${ana[0]}\n━━━━━━━━━━━━")}
-                            "lhyl" -> {val ana = SSAna.getSSAna();Monitor.messageSender("Group", event.group.id, "> 林槐语录：${ana[1]}\n━━━━━━━━━━━━\n${ana[0]}\n━━━━━━━━━━━━")}
-                            "lhyl-a" -> {val ana = SSAna.getSSAna(true);Monitor.messageSender("Group", event.group.id, "> 林槐语录：${ana[1]}\n━━━━━━━━━━━━\n${ana[0]}\n━━━━━━━━━━━━")}
+                            "runInfo" -> RunInfo(event)
+                            "林槐语录" -> {val ana = SSAna.getSSAna();Xiaoshou.sendMessage("Group", "> 林槐语录：${ana[1]}\n━━━━━━━━━━━━\n${ana[0]}\n━━━━━━━━━━━━" ,event)}
+                            "lhyl" -> {val ana = SSAna.getSSAna();Xiaoshou.sendMessage("Group", "> 林槐语录：${ana[1]}\n━━━━━━━━━━━━\n${ana[0]}\n━━━━━━━━━━━━" ,event)}
+                            "lhyl-a" -> {val ana = SSAna.getSSAna(true);Xiaoshou.sendMessage("Group", "> 林槐语录：${ana[1]}\n━━━━━━━━━━━━\n${ana[0]}\n━━━━━━━━━━━━" ,event)}
                         }
                     }
                     ":" -> {
                         when(topCommand) {
-                            "林槐语录" -> Monitor.messageSender("Group", event.group.id, "> 林槐语录：\n━━━━━━━━━━━━\n${SSAna.getOneSSAna(msg[0])}\n━━━━━━━━━━━━")
-                            "lhyl" -> Monitor.messageSender("Group", event.group.id, "> 林槐语录：\n━━━━━━━━━━━━\n${SSAna.getOneSSAna(msg[0])}\n━━━━━━━━━━━━")
+                            "林槐语录" -> Xiaoshou.sendMessage("Group",  "> 林槐语录：\n━━━━━━━━━━━━\n${SSAna.getOneSSAna(msg[0])}\n━━━━━━━━━━━━" ,event)
+                            "lhyl" -> Xiaoshou.sendMessage("Group", "> 林槐语录：\n━━━━━━━━━━━━\n${SSAna.getOneSSAna(msg[0])}\n━━━━━━━━━━━━" ,event)
                         }
                     }
                 }
