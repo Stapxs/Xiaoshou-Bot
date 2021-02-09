@@ -97,17 +97,16 @@ object Xiaoshou {
      * @return
     **/
     suspend fun sendMessage(type: String, msg: String, event: GroupMessageEvent, doAt: Boolean = false, doQuote: Boolean = false) {
-        val msgLogout = msg.replace("\n", " \\n ")
         if(type == "Group") {
             if(doAt) {
                 event.group.sendMessage(At(event.sender) + msg)
-                Log.addLog("xiaoshou", "${event.group.id} (Group) <- [Quote - ${event.sender.id}] \"$msgLogout\"")
+                Log.addLog("xiaoshou", "${event.group.id} (Group) <- [Quote - ${event.sender.id}] \"$msg\"")
             } else if(doQuote) {
                 event.group.sendMessage(event.message.quote() + msg)
-                Log.addLog("xiaoshou", "${event.group.id} (Group) <- [Quote - ${event.sender.id}] \"$msgLogout\"")
+                Log.addLog("xiaoshou", "${event.group.id} (Group) <- [Quote - ${event.sender.id}] \"$msg\"")
             } else {
                 event.group.sendMessage(msg)
-                Log.addLog("xiaoshou", "${event.group.id} (Group) <- \"$msgLogout\"")
+                Log.addLog("xiaoshou", "${event.group.id} (Group) <- \"$msg\"")
             }
         }
     }

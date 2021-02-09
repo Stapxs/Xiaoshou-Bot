@@ -8,7 +8,21 @@ suspend fun sendHelp(event: GroupMessageEvent, command: String) {
         for (com in CommandList.comList) {
             if (com.comName == command) {
                 if (com.comDescription != "") {
-                    Xiaoshou.sendMessage("Group", com.comDescription, event)
+                    var out = "";
+                    out = if(com.comDescription.indexOf("-") > 0) {
+                        val use = com.comDescription.split("-")
+                            "> 指令 - ${com.comType} - ${com.comName}\n${use[0]}\n" +
+                            "━━━━━━━━━━━━\n" +
+                            "*例子*\n" +
+                            "${use[1]}\n" +
+                            "━━━━━━━━━━━━"
+                    } else {
+                            "> 指令 - ${com.comType} - ${com.comName}\n" +
+                            "━━━━━━━━━━━━\n" +
+                            "${com.comDescription}\n" +
+                            "━━━━━━━━━━━━"
+                    }
+                    Xiaoshou.sendMessage("Group", out, event)
                     return
                 } else {
                     Xiaoshou.sendMessage("Group", "这个指令没有提示欸", event)

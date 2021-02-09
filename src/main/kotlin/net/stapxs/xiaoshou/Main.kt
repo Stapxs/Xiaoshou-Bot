@@ -2,6 +2,8 @@ package net.stapxs.xiaoshou
 
 import com.google.gson.Gson
 import net.mamoe.mirai.BotFactory
+import net.mamoe.mirai.alsoLogin
+import net.mamoe.mirai.utils.BotConfiguration
 import net.stapxs.xiaoshou.features.Log
 import net.stapxs.xiaoshou.features.Options
 import net.stapxs.xiaoshou.features.RunStat
@@ -11,7 +13,7 @@ import java.util.*
 import kotlin.system.exitProcess
 
 // 版本号
-const val sysVersion = "Dev-0.5.17-2"
+const val sysVersion = "Dev-0.5.18-2"
 // 全局 Json 反序列化 Gson
 val gson = Gson()
 // 退出标识
@@ -49,8 +51,10 @@ suspend fun main() {
 
     // 启动 Mirai Bot
     Log.addLog("bot", "正在启动 Bot ……")
-    val miraiBot = BotFactory.newBot(qqID, qqPassword) { fileBasedDeviceInfo() }
-    miraiBot.login()    // 登录
+    val miraiBot = BotFactory.newBot(qqID, qqPassword) {
+        fileBasedDeviceInfo()
+        protocol = BotConfiguration.MiraiProtocol.ANDROID_PAD
+    }.alsoLogin()    // 登录
 
     // 启动 Xiaoshou Core 事件监听
     Thread{Xiaoshou.xiaoshouCore(miraiBot)}.run()

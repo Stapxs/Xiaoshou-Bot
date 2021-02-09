@@ -17,8 +17,10 @@ object Log {
      * @return
     **/
     fun addLog(type: String, log: String) {
+        var logIn = log.replace("\n", " \\n ")
+        logIn = logIn.replace("\r", " \\r ")
         val nowTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())
-        val outString = "[$nowTime][$type] $log"
+        val outString = "[$nowTime][$type] $logIn"
         logList.addFirst(outString)
         // println("> 添加日志：$outString")
     }
