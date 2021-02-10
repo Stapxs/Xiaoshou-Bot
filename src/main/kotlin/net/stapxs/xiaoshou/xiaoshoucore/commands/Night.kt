@@ -4,24 +4,21 @@ import net.stapxs.xiaoshou.features.GloStorage
 import net.stapxs.xiaoshou.features.Log
 import net.stapxs.xiaoshou.features.Options
 import net.stapxs.xiaoshou.features.SSUserClass
+import java.io.File
 
 object Night {
 
-    class NightVer(id: Long, says: MutableList<String>) {
-        val nId: Long = id
-        val nSays: List<String> = says
-    }
+    private val file = File("Options/nightSays.ini")
 
-    fun sendNight(id: Long): String {
-        if(Options.getOpt("nightSays") == "Err") {
-            Log.addLog("xiaoshou", "Err <- 缺失配置：nightSays")
-            return "Err <- 缺失配置：nightSays"
+    fun send(id: Long): String {
+        val nights = Options.read(file)
+        if(nights.count() <= 0) {
+            Log.addLog("xiaoshou", "Err > Night.kt > fun sendNight > 读取晚安设置错误！")
+            return "Err > Night.kt > fun sendNight > 读取晚安设置错误！"
         } else {
             // 判断时间
             if(SSUserClass.getTimeH().toInt() > 21 || SSUserClass.getTimeH().toInt() < 4)
             {
-                // 反序列化
-                val nightSays = recodeNSays(Options.getOpt("nightSays"))
                 // 判断是否发送
                 var canSay = false
                 var sayed = false
@@ -57,10 +54,10 @@ object Night {
                 if(canSay) {
                     if(!sayed) {
                         var hasSend = false
-                        for (says in nightSays) {
-                            if (says.nId == id) {
+                        for (says in nights) {
+                            if (says.optName.toLong() == id) {
                                 hasSend = true
-                                return SSUserClass.getOne(says.nSays)
+                                return SSUserClass.getOne(says.optValue.split("/"))
                             }
                         }
                         if (!hasSend) {
@@ -68,12 +65,11 @@ object Night {
                         }
                     }
                     else {
-                        if(Options.getOpt("goNight") != "Err") {
-                            var goNightList = Options.getOpt("goNight").split(",")
-                            return SSUserClass.getOne(goNightList)
-                        }
-                        else {
-                            return "赶紧去睡啦 = ="
+                        return if(Options.getOpt("goNight") != "Err") {
+                            val goNightList = Options.getOpt("goNight").split(",")
+                            SSUserClass.getOne(goNightList)
+                        } else {
+                            "赶紧去睡啦 = ="
                         }
                     }
                 }
@@ -82,39 +78,52 @@ object Night {
             }
 
         }
-        return "Err <- 未知错误：Night.tk"
-    }
-    
-    /**
-     * @Author Stapxs
-     * @Description 序列化晚安存储信息
-     * @Date 下午 04:35 2020/12/1
-     * @Param 
-     * @return 
-    **/
-    private fun encodeNSays() {
-        
+        return "Err > Night.tk > fun sendNight > 未知错误"
     }
 
-    /**
-     * @Author Stapxs
-     * @Description 反序列化晚安存储信息
-     * @Date 下午 04:36 2020/12/1
-     * @Param
-     * @return
-    **/
-    private fun recodeNSays(set: String): MutableList<NightVer> {
-        println("> 开始反序列化晚安设置……")
-        var nights: MutableList<NightVer> = mutableListOf()
-        val main = set.split(",")
-        for (says in main) {
-            val sayQQ: MutableList<String> = says.split("/") as MutableList<String>
-            val qq = sayQQ[0].toLong()
-            sayQQ.removeAt(0)
-            println("    $qq -> $sayQQ")
-            nights.add(NightVer(qq, sayQQ))
+    private fun all(id: Long): String {
+        val nights = Options.read(file)
+        var out = "> 所有晚安语句：\n━━━━━━━━━━━━\n"
+        for(night in nights) {
+            if(night.optName.toLong() == id) {
+                val nightSays = night.optValue.split("/")
+                for (nightSay in nightSays) {
+                    out += nightSay + "\n"
+                }
+            }
         }
-        return nights
+        out += "━━━━━━━━━━━━"
+        return out
     }
 
+    private fun add(id: Long, say: String): String {
+        if(say.indexOf("/") >= 0 || say.indexOf(":") >= 0) {
+            return "不能有“:”和“/”哦"
+        }
+        val nights = Options.read(file)
+        for(night in nights) {
+            return if(night.optName.toLong() == id) {
+                if(Options.set(file, nights, night.optName, night.optValue + "/$say")) {
+                    "记住啦"
+                } else {
+                    "啊呀没记住呢 XD"
+                }
+            } else {
+                if(Options.set(file, nights, id.toString(), say)) {
+                    "记住啦"
+                } else {
+                    "啊呀没记住呢 XD"
+                }
+            }
+        }
+        return "Err > Night.kt > fun add > 未知错误"
+    }
+
+    fun nightJump(command: MutableList<String>, id: Long): String {
+        return when(command[0]) {
+            "all" -> all(id)
+            "add" -> add(id, SSUserClass.mergeStringList(command, 1, command.count() - 1, " "))
+            else -> SSUserClass.getOne(GloStorage.comErrSay)
+        }
+    }
 }

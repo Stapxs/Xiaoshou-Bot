@@ -55,8 +55,7 @@ object Log {
      * @Param
      * @return
     **/
-    fun writeLog()
-    {
+    fun writeLog() {
         println("> 开始输出日志")
         while (!exit)
         {
@@ -72,7 +71,6 @@ object Log {
         }
         println("> 输出日志结束")
     }
-
     class CustomThread : Thread() {
         override fun run() {
             super.run()

@@ -1,6 +1,7 @@
 package net.stapxs.xiaoshou.xiaoshoucore
 
 import net.mamoe.mirai.event.events.GroupMessageEvent
+import net.mamoe.mirai.message.data.content
 import net.stapxs.xiaoshou.features.Log
 import net.stapxs.xiaoshou.xiaoshoucore.commands.*
 
@@ -24,6 +25,7 @@ object Migrate {
                             "say" -> Xiaoshou.sendMessage("Group", ((msg.toString()).substring(1, (msg.toString()).length - 1)).replace(", ", " "), event)
                             "help" -> sendHelp(event, msg[0])
                             "?" -> sendHelp(event, msg[0])
+                            "night" -> Xiaoshou.sendMessage("Group", Night.nightJump(msg, event.sender.id), event)
                         }
                     }
                     "." -> {
@@ -60,30 +62,29 @@ object Migrate {
     suspend fun at(event: GroupMessageEvent, type: String, msg: String) {
         var top = ""
         var msgs = mutableListOf<String>()
-        when(type) {
-                "/" -> {
-                    top = msg.substring(0, msg.indexOf(" "))
-                    val other = msg.substring(msg.indexOf(" ") + 1)
-                    msgs = other.split(" ") as MutableList<String>
-                }
-                "." -> {
-                    top = msg
-                }
-                ":" -> {
-                    msgs.add(msg.split(":")[1])
-                    top = msg.split(":")[0]
-                }
-                "&" -> {
-                    top = "other"
-                    msgs.add(msg)
-                }
+        when (type) {
+            "/" -> {
+                top = msg.substring(0, msg.indexOf(" "))
+                val other = msg.substring(msg.indexOf(" ") + 1)
+                msgs = other.split(" ") as MutableList<String>
+            }
+            "." -> {
+                top = msg
+            }
+            ":" -> {
+                msgs.add(msg.split(":")[1])
+                top = msg.split(":")[0]
+            }
+            "&" -> {
+                top = "other"
+                msgs.add(msg)
+            }
         }
-        if(top != "") {
-            if(top != "other") {
+        if (top != "") {
+            if (top != "other") {
                 Log.addLog("xiaoshou", "执行指令：$type => $top => $msgs")
             }
             jump(event, type, top, msgs)
         }
     }
-
 }

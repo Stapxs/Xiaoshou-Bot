@@ -25,11 +25,11 @@ suspend fun OtherJump(event: GroupMessageEvent) {
             if (says == event.message.content) {
                 if (CommandList.hasAuthority("&", "晚安问候", event.group.id)) {
                     Log.addLog("xiaoshou", "执行指令：& => 晚安问候")
-                    Xiaoshou.sendMessage("Group", Night.sendNight(event.sender.id), event, false, true)
+                    Xiaoshou.sendMessage("Group", Night.send(event.sender.id), event, false, true)
                     return
                 }
             }
     } else {
-        Log.addLog("xiaoshou", "Err <- 缺失配置：nightTrigger")
+        Log.addLog("xiaoshou", "Err > OtherJump > fun OtherJump > 缺失配置：nightTrigger")
     }
 }

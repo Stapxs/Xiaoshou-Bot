@@ -45,7 +45,7 @@ object Xiaoshou {
                         get = true
                         Migrate.at(event, ":", msg)
                     }
-                } catch (e: Throwable) { Log.addLog("xiaoshou", "处理 指令 : 出现错误 -> $e") }
+                } catch (e: Throwable) { Log.addLog("xiaoshou", "Err > Xiaoshou.kt > fun XiaoshuoCore > 处理 指令 : 出现错误 -> $e") }
                 if(!get) {
                     Migrate.at(event, "&", msg)
                 }
@@ -55,7 +55,7 @@ object Xiaoshou {
         // 全局
         miraiBot.eventChannel.subscribeAlways<MessageEvent> { event ->
             val msg = event.message.content
-            if(msg.contains("休息啦") || msg.contains("干活啦")) {
+            if(msg == "休息啦" || msg == "干活啦") {
                 if (Options.getOpt("masterID") != "Err") {
                     if (msg.contains("休息啦") && event.sender.id == Options.getOpt("masterID").toLong()) {
                         subject.sendMessage("好的 ——")
@@ -66,8 +66,8 @@ object Xiaoshou {
                         run = true
                     }
                 } else {
-                    subject.sendMessage("Err > Options Null master")
-                    Log.addLog("xiaoshou", "没有找到主人 > Options Null master")
+                    subject.sendMessage("Err > Xiaoshou.kt > fun XiaoshuoCore > Options Null master")
+                    Log.addLog("xiaoshou", "Err > Xiaoshou.kt > fun XiaoshuoCore > Options Null master")
                 }
             }
             // SS!

@@ -80,10 +80,11 @@ object Options {
         try {
             if(!file.exists()) {
                 // 未找到设置文件……
+                    Log.addLog("xiaoshou", "没有找到 ${file.name} 这个东西！")
                 return mutableListOf()
             }
             val fileList: List<String> = file.readLines()
-            println(">> 读取到如下设置：")
+            println(">> 在 ${file.name} 读取到如下设置：")
             for (str in fileList) {
                 val strList: List<String> = mutableListOf(
                     str.substring(0, str.indexOf(":")),
@@ -98,6 +99,7 @@ object Options {
             return list
         }
         catch (e: Throwable) {
+            Log.addLog("xiaoshou", "在整理 ${file.name} 这个东西的时候出了点问题。")
             return mutableListOf()
         }
     }
@@ -121,7 +123,7 @@ object Options {
     private fun save(file: File, opts: MutableList<OptVer>):String {
         try {
             file.writeText("")
-            for (opt in optList) {
+            for (opt in opts) {
                 file.appendText(opt.optName + ":" + opt.optValue + "\n")
             }
         }

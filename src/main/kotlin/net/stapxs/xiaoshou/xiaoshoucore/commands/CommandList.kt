@@ -14,23 +14,23 @@ object CommandList {
 
     var comList:List<ComVer> = mutableListOf(
         ComVer("/", "wiki", "DHWGroups,PdsGroups"),
-        ComVer("/", "night", "DHWGroups,PdsGroups"),
+        ComVer("/", "night", "DHWGroups,PdsGroups", "晚安问候设置-/night add <要添加的语句>-/night all-/night del <要删除的行号>"),
         ComVer("/", "getpic", "DHWGroups,PdsGroups", "下载网络图片-/getpic <图片链接>"),
         ComVer("/", "say", "All", "让晓狩说点什么？-/say 栗子"),
-        ComVer("/", "help", "All", "就是 help！使用/help all 查看所有。-/help fox"),
-        ComVer("/", "?", "All", "就是 help！使用/? all 查看所有。-/? cat"),
+        ComVer("/", "help", "All", "就是 help！使用 /help all 查看所有。-/help fox"),
+        ComVer("/", "?", "All", "hidden"),
 
-        ComVer(".", "林槐语录", "All", "抽一条林槐语录"),
-        ComVer(".", "lhyl", "All", "抽一条林槐语录"),
-        ComVer(".", "lhyl-a", "DHWGroups", "抽一条林槐语录"),
+        ComVer(".", "林槐语录", "All", "抽一条林槐语录-.林槐语录"),
+        ComVer(".", "lhyl", "All", "hidden"),
+        ComVer(".", "lhyl-a", "DHWGroups", "hidden"),
         ComVer(".", "小龙语录", "DHWGroups"),
         ComVer(".", "runInfo", "DHWGroups,PdsGroups"),
         ComVer(".", "cat", "DHWGroups,PdsGroups"),
         ComVer(".", "dog", "DHWGroups,PdsGroups"),
         ComVer(".", "fox", "DHWGroups,PdsGroups"),
 
-        ComVer(":", "林槐语录", "All", "获取一条指定的一条林槐语录-林槐语录:32"),
-        ComVer(":", "lhyl", "All", "获取一条指定的一条林槐语录-lhyl:32"),
+        ComVer(":", "林槐语录", "All", "获取指定的一条林槐语录-林槐语录:32-hidden"),
+        ComVer(":", "lhyl", "All", "hidden"),
         ComVer(":", "mcwiki", "DHWGroups,PdsGroups"),
         ComVer(":", "trwiki", "DHWGroups,PdsGroups"),
         ComVer(":", "qx", "DHWGroups"),
@@ -38,8 +38,8 @@ object CommandList {
         ComVer("&", "你好，晓狩！", "All"),
 
         ComVer("&", "[[wiki]]", "DHWGroups"),
-        ComVer("&", "晚安问候", "DHWGroups,PdsGroups"),
-        ComVer("&", "早安问候", "DHWGroups,PdsGroups")
+        ComVer("&", "晚安问候", "DHWGroups,PdsGroups", "hidden"),
+        ComVer("&", "早安问候", "DHWGroups,PdsGroups", "hidden")
     )
 
     // ComVer("&", "垃圾人品", "DHWGroups"),

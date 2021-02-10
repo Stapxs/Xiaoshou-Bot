@@ -162,4 +162,30 @@ object SSUserClass {
         return sdf.format(Date())
     }
 
+    /**
+     * @Author Stapxs
+     * @Description 合并字符串 List 的一部分并返回这部分
+     * @Date 下午 07:04 2021/2/10
+     * @Param
+     * @return
+    **/
+    fun mergeStringList(list: MutableList<String>, start: Int, end: Int, add: String): String {
+        if(start < 0 || end < 0 || start >= end || end > list.count() - 1) {
+            return "Err > SSUserClass.kt > fun mergeStringList > 输入值不规范"
+        }
+        var now = 0
+        var out = ""
+        for(str in list) {
+            if(now < start) {
+                now ++
+            } else if(now in start..end) {
+                out += str + add
+                now ++
+            } else {
+                break
+            }
+        }
+        return out.substring(0, out.length - add.length)
+    }
+
 }

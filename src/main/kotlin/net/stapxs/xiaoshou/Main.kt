@@ -53,7 +53,7 @@ suspend fun main() {
     Log.addLog("bot", "正在启动 Bot ……")
     val miraiBot = BotFactory.newBot(qqID, qqPassword) {
         fileBasedDeviceInfo()
-        protocol = BotConfiguration.MiraiProtocol.ANDROID_PAD
+        protocol = BotConfiguration.MiraiProtocol.ANDROID_PHONE
     }.alsoLogin()    // 登录
 
     // 启动 Xiaoshou Core 事件监听
