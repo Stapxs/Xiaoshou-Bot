@@ -32,7 +32,7 @@ suspend fun main() {
     // 初始化设置
     if(!Options.readOpt()) {
         // 设置文件不存在
-        Log.printErr("设置文件不存在。")
+        Log.printErr("设置文件不存在或读取错误。")
         exit = true
         exitProcess(-1)
     }
