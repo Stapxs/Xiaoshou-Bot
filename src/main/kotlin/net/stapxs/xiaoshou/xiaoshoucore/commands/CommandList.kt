@@ -39,7 +39,8 @@ object CommandList {
 
         ComVer("&", "[[wiki]]", "DHWGroups"),
         ComVer("&", "晚安问候", "DHWGroups,PdsGroups", "hidden"),
-        ComVer("&", "早安问候", "DHWGroups,PdsGroups", "hidden")
+        ComVer("&", "早安问候", "DHWGroups,PdsGroups", "hidden"),
+        ComVer("&", "PIXIV", "DHWGroups,PdsGroups", "hidden")
     )
 
     // ComVer("&", "垃圾人品", "DHWGroups"),

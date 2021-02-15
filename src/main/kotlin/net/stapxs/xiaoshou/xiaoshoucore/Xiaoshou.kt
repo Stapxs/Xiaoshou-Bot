@@ -41,7 +41,7 @@ object Xiaoshou {
                     }
                 }
                 try {
-                    if (msg.indexOf(":") >= 0 && msg.indexOf("\n") < 0) {
+                    if (msg.indexOf(":") >= 0 && msg.indexOf("\n") < 0 && msg.indexOf("http") < 0) {
                         get = true
                         Migrate.at(event, ":", msg)
                     }

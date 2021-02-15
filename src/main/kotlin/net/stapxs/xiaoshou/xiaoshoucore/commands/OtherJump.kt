@@ -32,4 +32,13 @@ suspend fun OtherJump(event: GroupMessageEvent) {
     } else {
         Log.addLog("xiaoshou", "Err > OtherJump > fun OtherJump > 缺失配置：nightTrigger")
     }
+
+    // pixiv 图片自动下载
+    if(event.message.content.indexOf("https://www.pixiv.net/artworks/") >= 0) {
+        if (CommandList.hasAuthority("&", "PIXIV", event.group.id)) {
+            Log.addLog("xiaoshou", "执行指令：& => PIXIV")
+            ImgGetter.pixiv.getASend(event.message.content, event)
+            return
+        }
+    }
 }

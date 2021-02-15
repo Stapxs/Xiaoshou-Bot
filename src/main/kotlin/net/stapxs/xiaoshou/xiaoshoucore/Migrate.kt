@@ -72,8 +72,10 @@ object Migrate {
                 top = msg
             }
             ":" -> {
-                msgs.add(msg.split(":")[1])
-                top = msg.split(":")[0]
+                if(msg[1].toString().length < 20) {
+                    msgs.add(msg.split(":")[1])
+                    top = msg.split(":")[0]
+                }
             }
             "&" -> {
                 top = "other"
