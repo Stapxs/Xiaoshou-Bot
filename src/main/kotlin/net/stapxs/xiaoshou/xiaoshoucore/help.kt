@@ -1,7 +1,7 @@
 package net.stapxs.xiaoshou.xiaoshoucore
 
 import net.mamoe.mirai.event.events.GroupMessageEvent
-import net.stapxs.xiaoshou.xiaoshoucore.commands.CommandList
+import net.stapxs.xiaoshou.features.CommandList
 
 suspend fun sendHelp(event: GroupMessageEvent, command: String) {
     if(command != "all") {

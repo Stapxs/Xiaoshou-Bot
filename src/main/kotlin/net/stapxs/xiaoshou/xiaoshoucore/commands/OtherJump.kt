@@ -2,6 +2,7 @@ package net.stapxs.xiaoshou.xiaoshoucore.commands
 
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.message.data.content
+import net.stapxs.xiaoshou.features.CommandList
 import net.stapxs.xiaoshou.features.Log
 import net.stapxs.xiaoshou.features.Options
 import net.stapxs.xiaoshou.xiaoshoucore.Xiaoshou

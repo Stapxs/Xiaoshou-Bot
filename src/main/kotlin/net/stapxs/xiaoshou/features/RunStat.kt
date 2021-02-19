@@ -43,10 +43,12 @@ object RunStat {
                 }
             } else {
                 Log.addLog("stat", "Xiaoshou 已运行：${statList[2].optValue}，没有找到 BotAPI 地址，请确认设置并重启或刷新设置。")
+                break
             }
 
             Thread.sleep(600000L)
         }
+        Log.addLog("stat", "状态监控已退出。")
     }
 
     fun getInfo():MutableList<Options.OptVer> {

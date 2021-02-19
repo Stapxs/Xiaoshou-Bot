@@ -1,7 +1,7 @@
 package net.stapxs.xiaoshou.xiaoshoucore
 
 import net.mamoe.mirai.event.events.GroupMessageEvent
-import net.mamoe.mirai.message.data.content
+import net.stapxs.xiaoshou.features.CommandList
 import net.stapxs.xiaoshou.features.Log
 import net.stapxs.xiaoshou.xiaoshoucore.commands.*
 
@@ -72,10 +72,8 @@ object Migrate {
                 top = msg
             }
             ":" -> {
-                if(msg[1].toString().length < 20) {
-                    msgs.add(msg.split(":")[1])
-                    top = msg.split(":")[0]
-                }
+                msgs.add(msg.split(":")[1])
+                top = msg.split(":")[0]
             }
             "&" -> {
                 top = "other"

@@ -4,10 +4,7 @@ import com.google.gson.Gson
 import net.mamoe.mirai.BotFactory
 import net.mamoe.mirai.alsoLogin
 import net.mamoe.mirai.utils.BotConfiguration
-import net.stapxs.xiaoshou.features.Log
-import net.stapxs.xiaoshou.features.Options
-import net.stapxs.xiaoshou.features.RunStat
-import net.stapxs.xiaoshou.features.SSUserClass
+import net.stapxs.xiaoshou.features.*
 import net.stapxs.xiaoshou.xiaoshoucore.Xiaoshou
 import java.util.*
 import kotlin.system.exitProcess
@@ -31,12 +28,19 @@ suspend fun main() {
 
     // 初始化设置
     if(!Options.readOpt()) {
-        // 设置文件不存在
         Log.printErr("设置文件不存在或读取错误。")
         exit = true
         exitProcess(-1)
     }
     Log.addLog("opt", "设置读取初始化完成！")
+
+    // 初始化指令列表
+    if(!CommandList.read()) {
+        Log.printErr("指令列表文件不存在或读取错误。")
+        exit = true
+        exitProcess(-1)
+    }
+    Log.addLog("opt", "指令列表读取初始化完成！")
 
     // 获取账号设置
     if(Options.getOpt("qqID").indexOf("Err") > 0 ||

@@ -26,26 +26,30 @@ object Xiaoshou {
             if(run) {
                 var get = false
                 val msg = event.message.content
-                when(msg.substring(0,1)) {
-                    "/" -> {
-                        get = true
-                        Migrate.at(event,"/", msg.substring(1))
+                if(msg != "") {
+                    when (msg.substring(0, 1)) {
+                        "/" -> {
+                            get = true
+                            Migrate.at(event, "/", msg.substring(1))
+                        }
+                        "." -> {
+                            get = true
+                            Migrate.at(event, ".", msg.substring(1))
+                        }
+                        "。" -> {
+                            get = true
+                            Migrate.at(event, ".", msg.substring(1))
+                        }
                     }
-                    "." -> {
-                        get = true
-                        Migrate.at(event,".", msg.substring(1))
-                    }
-                    "。" -> {
-                        get = true
-                        Migrate.at(event,".", msg.substring(1))
+                    try {
+                        if (msg.indexOf(":") >= 0 && msg.indexOf("\n") < 0 && msg.indexOf("http") < 0) {
+                            get = true
+                            Migrate.at(event, ":", msg)
+                        }
+                    } catch (e: Throwable) {
+                        Log.addLog("xiaoshou", "Err > Xiaoshou.kt > fun XiaoshuoCore > 处理 指令 : 出现错误 -> $e")
                     }
                 }
-                try {
-                    if (msg.indexOf(":") >= 0 && msg.indexOf("\n") < 0 && msg.indexOf("http") < 0) {
-                        get = true
-                        Migrate.at(event, ":", msg)
-                    }
-                } catch (e: Throwable) { Log.addLog("xiaoshou", "Err > Xiaoshou.kt > fun XiaoshuoCore > 处理 指令 : 出现错误 -> $e") }
                 if(!get) {
                     Migrate.at(event, "&", msg)
                 }
