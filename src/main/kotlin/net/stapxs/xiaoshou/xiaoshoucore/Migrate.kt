@@ -20,6 +20,7 @@ object Migrate {
                 when (type) {
                     "/" -> {
                         when (topCommand) {
+                            "lib" -> PicLib.jumper(event, msg)
                             // "wiki" -> WIKI.wikiMain()
                             "getpic" -> ImgGetter.DownloadASend(event, msg[0], "正在和图片服务器交涉……")
                             "say" -> Xiaoshou.sendMessage("Group", ((msg.toString()).substring(1, (msg.toString()).length - 1)).replace(", ", " "), event)

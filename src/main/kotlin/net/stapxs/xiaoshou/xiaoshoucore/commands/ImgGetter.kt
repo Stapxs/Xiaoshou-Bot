@@ -5,7 +5,6 @@ import net.stapxs.xiaoshou.features.Log
 import net.stapxs.xiaoshou.features.SSUserClass
 import net.stapxs.xiaoshou.xiaoshoucore.Xiaoshou
 import java.io.File
-import java.net.URL
 
 object ImgGetter {
 
@@ -20,7 +19,7 @@ object ImgGetter {
                 Xiaoshou.sendMessage("Group", msg ,event)
             }
             SSUserClass.downloadImg(url, "PicsCache/$time")
-            Xiaoshou.imangeSender("Group", File("PicsCache/$time") ,event)
+            Xiaoshou.sendImange("Group", File("PicsCache/$time") ,event)
             File("PicsCache/$time").delete()
         }
         catch (e: Throwable) {
@@ -58,11 +57,11 @@ object ImgGetter {
             if(downLoad == "") {
                 downLoad = Download("$getUrl$id-1.png")
                 if(downLoad != "") {
-                    Xiaoshou.imangeSender("Group", File(downLoad) ,event)
+                    Xiaoshou.sendImange("Group", File(downLoad) ,event)
                     File(downLoad).delete()
                 }
             } else {
-                Xiaoshou.imangeSender("Group", File(downLoad) ,event)
+                Xiaoshou.sendImange("Group", File(downLoad) ,event)
                 File(downLoad).delete()
             }
         }

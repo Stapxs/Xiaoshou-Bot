@@ -97,7 +97,7 @@ object SSUserClass {
 
     /**
      * @Author Stapxs
-     * @Description 保存吐泡泡到指定目录
+     * @Description 保存图片到指定目录
      * @Date 下午 06:24 2020/11/23
      * @Param
      * @return

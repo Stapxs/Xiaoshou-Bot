@@ -7,9 +7,12 @@ import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.data.At
 import net.mamoe.mirai.message.data.MessageSource.Key.quote
 import net.mamoe.mirai.message.data.content
+import net.stapxs.xiaoshou.exit
+import net.stapxs.xiaoshou.features.CommandList
 import net.stapxs.xiaoshou.features.Log
 import net.stapxs.xiaoshou.features.Options
 import java.io.File
+import kotlin.system.exitProcess
 
 object Xiaoshou {
 
@@ -20,6 +23,15 @@ object Xiaoshou {
         println("> 开始监听消息……")
         Log.addLog("xiaoshou", "你好人类，这是我插入在 Core Log 中的日志！如果有什么问题的话，可以看“xiaoshou”开头的日志哦")
         Log.addLog("xiaoshou", "开始监听消息……")
+
+        // 初始化指令列表
+        if(!CommandList.read()) {
+            Log.printErr("指令列表文件不存在或读取错误。")
+            exit = true
+            exitProcess(-1)
+        }
+        Log.addLog("opt", "指令列表读取初始化完成！")
+
         var run = true
         // 群组
         miraiBot.eventChannel.subscribeAlways<GroupMessageEvent> { event ->
@@ -122,11 +134,17 @@ object Xiaoshou {
      * @Param
      * @return
     **/
-    suspend fun imangeSender(type: String, img: File, event: GroupMessageEvent) {
+    suspend fun sendImange(type: String, img: File, event: GroupMessageEvent): String {
         if(type == "Group") {
-            Log.addLog("xiaoshou", "${event.group.id} (Group) <- [Image]${img}")
-            event.group.sendImage(img)
+            return try {
+                Log.addLog("xiaoshou", "${event.group.id} (Group) <- [Image]${img}")
+                event.group.sendImage(img)
+                "OK"
+            } catch (e: Throwable) {
+                "Err > Xiaoshou.kt > fun sendImange > ${e.message.toString()}"
+            }
         }
+        return "Err > Xiaoshou.kt > fun sendImange > 未知的错误！"
     }
 
 }
