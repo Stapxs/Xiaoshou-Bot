@@ -18,6 +18,6 @@ LogNow.log
 Options.ini
 device.json
 PicsCache
-/Options/
+/Options/*
 !/Options/Commands.sconf
 Pics
