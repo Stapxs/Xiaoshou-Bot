@@ -23,7 +23,6 @@ object CommandList {
      * @return
     **/
     fun read(): Boolean {
-        val list:MutableList<ComVer> = mutableListOf()
         try {
             if(!file.exists()) {
                 // 未找到设置文件……

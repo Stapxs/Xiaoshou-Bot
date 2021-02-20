@@ -102,17 +102,25 @@ object SSUserClass {
      * @Param
      * @return
     **/
-    fun downloadImg(url: String, to: String) {
-        var conn : HttpURLConnection? = null
-        conn = URL(url).openConnection() as HttpURLConnection       //建立链接
-        conn.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0");
-        conn.connect()      //打开输入流
-        conn.inputStream.use { input ->
-            BufferedOutputStream(FileOutputStream(to)).use { output ->
-                input.copyTo(output)
+    fun downloadImg(url: String, to: String): String {
+        try {
+            var conn: HttpURLConnection? = null
+            conn = URL(url).openConnection() as HttpURLConnection       //建立链接
+            conn.addRequestProperty(
+                "User-Agent",
+                "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0"
+            );
+            conn.connect()      //打开输入流
+            conn.inputStream.use { input ->
+                BufferedOutputStream(FileOutputStream(to)).use { output ->
+                    input.copyTo(output)
+                }
             }
+            conn.disconnect()
+            return "OK"
+        } catch (e: Throwable) {
+            return e.message.toString()
         }
-        conn.disconnect()
     }
 
     /**
