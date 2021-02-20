@@ -17,8 +17,10 @@ object Log {
      * @return
     **/
     fun addLog(type: String, log: String) {
+        var logIn = log.replace("\n", " \\n ")
+        logIn = logIn.replace("\r", " \\r ")
         val nowTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())
-        val outString = "[$nowTime][$type] $log"
+        val outString = "[$nowTime][$type] $logIn"
         logList.addFirst(outString)
         // println("> 添加日志：$outString")
     }
@@ -53,8 +55,7 @@ object Log {
      * @Param
      * @return
     **/
-    fun writeLog()
-    {
+    fun writeLog() {
         println("> 开始输出日志")
         while (!exit)
         {
@@ -70,7 +71,6 @@ object Log {
         }
         println("> 输出日志结束")
     }
-
     class CustomThread : Thread() {
         override fun run() {
             super.run()

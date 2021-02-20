@@ -97,22 +97,30 @@ object SSUserClass {
 
     /**
      * @Author Stapxs
-     * @Description 保存吐泡泡到指定目录
+     * @Description 保存图片到指定目录
      * @Date 下午 06:24 2020/11/23
      * @Param
      * @return
     **/
-    fun downloadImg(url: String, to: String) {
-        var conn : HttpURLConnection? = null
-        conn = URL(url).openConnection() as HttpURLConnection       //建立链接
-        conn.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0");
-        conn.connect()      //打开输入流
-        conn.inputStream.use { input ->
-            BufferedOutputStream(FileOutputStream(to)).use { output ->
-                input.copyTo(output)
+    fun downloadImg(url: String, to: String): String {
+        try {
+            var conn: HttpURLConnection? = null
+            conn = URL(url).openConnection() as HttpURLConnection       //建立链接
+            conn.addRequestProperty(
+                "User-Agent",
+                "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0"
+            );
+            conn.connect()      //打开输入流
+            conn.inputStream.use { input ->
+                BufferedOutputStream(FileOutputStream(to)).use { output ->
+                    input.copyTo(output)
+                }
             }
+            conn.disconnect()
+            return "OK"
+        } catch (e: Throwable) {
+            return e.message.toString()
         }
-        conn.disconnect()
     }
 
     /**
@@ -160,6 +168,32 @@ object SSUserClass {
     fun getTimeH(): String {
         val sdf = SimpleDateFormat("HH")
         return sdf.format(Date())
+    }
+
+    /**
+     * @Author Stapxs
+     * @Description 合并字符串 List 的一部分并返回这部分
+     * @Date 下午 07:04 2021/2/10
+     * @Param
+     * @return
+    **/
+    fun mergeStringList(list: MutableList<String>, start: Int, end: Int, add: String): String {
+        if(start < 0 || end < 0 || start >= end || end > list.count() - 1) {
+            return "Err > SSUserClass.kt > fun mergeStringList > 输入值不规范"
+        }
+        var now = 0
+        var out = ""
+        for(str in list) {
+            if(now < start) {
+                now ++
+            } else if(now in start..end) {
+                out += str + add
+                now ++
+            } else {
+                break
+            }
+        }
+        return out.substring(0, out.length - add.length)
     }
 
 }

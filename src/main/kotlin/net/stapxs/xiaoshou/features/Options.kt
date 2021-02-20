@@ -13,35 +13,24 @@ object Options {
 
     /**
      * @Author Stapxs
-     * @Description //TODO 初始化读取设置
+     * @Description TODO 初始化读取设置
      * @Date 下午 08:09 2020/11/22
      * @Param
      * @return
      **/
     fun readOpt(): Boolean {
+        optList = mutableListOf()
         println("> 开始初始化设置系统……")
         try {
             if(!File("Options.ini").exists()) {
                 // 未找到设置文件……
                 return  false
             }
-            val optFileList: List<String> = File("Options.ini").readLines()
-            println(">> 读取到如下设置：")
-            for (str in optFileList) {
-                if(str.substring(0, 2) != "##") {
-                    val strList:List<String> = mutableListOf(
-                        str.substring(0, str.indexOf(":")),
-                        str.substring(str.indexOf(":") + 1)
-                    )
-                    val opt = OptVer(strList[0], strList[1])
-                    optList.add(opt)
-                    if(opt.optName != "qqPassword") {
-                        println("\t" + opt.optName + " : " + opt.optValue)
-                    }
-                }
+            optList = read(File("Options.ini"))
+            if(optList.count() <= 0) {
+                // 读取错误
+                return false
             }
-            // 初始化 GroupList
-            GroupList.initGroupList()
 
             return true
         }
@@ -51,7 +40,71 @@ object Options {
     }
 
     fun getOpt(name:String): String {
-        for(opt in optList) {
+        return get(optList, name)
+    }
+
+    /**
+     * @Author Stapxs
+     * @Description TODO 更改设置（自动保存）
+     * @Date 下午 08:12 2020/11/22
+     * @Param
+     * @return
+     **/
+    fun setOpt(name:String, value: String):Boolean {
+        return set(File("Options.ini"), optList, name, value)
+    }
+
+    /**
+     * @Author Stapxs
+     * @Description TODO 保存设置
+     * @Date 下午 08:12 2020/11/22
+     * @Param
+     * @return
+     **/
+    private fun saveOpt():String {
+        return save(File("Options.ini"), optList)
+    }
+
+    /** ------------------------------------------------------------------------ **/
+
+    /**
+     * @Author Stapxs
+     * @Description TODO 读取指定的ini设置文件
+     * @Date 下午 03:59 2021/2/10
+     * @Param
+     * @return
+    **/
+    fun read(file: File): MutableList<OptVer> {
+        val list:MutableList<OptVer> = mutableListOf()
+        try {
+            if(!file.exists()) {
+                // 未找到设置文件……
+                    Log.addLog("xiaoshou", "没有找到 ${file.name} 这个东西！")
+                return mutableListOf()
+            }
+            val fileList: List<String> = file.readLines()
+            println(">> 在 ${file.name} 读取到如下设置：")
+            for (str in fileList) {
+                val strList: List<String> = mutableListOf(
+                    str.substring(0, str.indexOf(":")),
+                    str.substring(str.indexOf(":") + 1)
+                )
+                val opt = OptVer(strList[0], strList[1])
+                list.add(opt)
+                if (opt.optName != "qqPassword") {
+                    println("\t" + opt.optName + " : " + opt.optValue)
+                }
+            }
+            return list
+        }
+        catch (e: Throwable) {
+            Log.addLog("xiaoshou", "在整理 ${file.name} 这个东西的时候出了点问题。")
+            return mutableListOf()
+        }
+    }
+
+    fun get(opts:MutableList<OptVer>, name:String): String {
+        for(opt in opts) {
             if(opt.optName == name) {
                 return opt.optValue
             }
@@ -61,15 +114,35 @@ object Options {
 
     /**
      * @Author Stapxs
-     * @Description //TODO 更改设置（自动保存）
-     * @Date 下午 08:12 2020/11/22
+     * @Description TODO 保存指定的ini设置文件
+     * @Date 下午 04:09 2021/2/10
      * @Param
      * @return
-     **/
-    fun setOpt(name:String, value: String):Boolean {
-        return try {
+    **/
+    private fun save(file: File, opts: MutableList<OptVer>):String {
+        try {
+            file.writeText("")
+            for (opt in opts) {
+                file.appendText(opt.optName + ":" + opt.optValue + "\n")
+            }
+        }
+        catch (e: Throwable) {
+            return "Err > Options.tk > fun save > " + e.message
+        }
+        return "OK"
+    }
+
+    /**
+     * @Author Stapxs
+     * @Description TODO 更改指定的ini设置文件（自动保存）
+     * @Date 下午 04:18 2021/2/10
+     * @Param
+     * @return
+    **/
+    fun set(file: File, opts: MutableList<OptVer>, name:String, value: String): Boolean {
+        try {
             var isChanged = false
-            for (opt in optList) {
+            for (opt in opts) {
                 if (opt.optName == name) {
                     opt.optValue = value
                     isChanged = true
@@ -77,33 +150,15 @@ object Options {
             }
             if(!isChanged) {
                 val opt = OptVer(name, value)
-                optList.add(opt)
+                opts.add(opt)
             }
-            saveOpt()
-            true
-        }
-        catch (e: Throwable) {
-            false
-        }
-    }
-
-    /**
-     * @Author Stapxs
-     * @Description //TODO 保存设置
-     * @Date 下午 08:12 2020/11/22
-     * @Param
-     * @return
-     **/
-    private fun saveOpt():String {
-        try {
-            File("Options.ini").writeText("")
-            for (opt in optList) {
-                File("Options.ini").appendText(opt.optName + ":" + opt.optValue + "\n")
+            if(save(file, opts) == "OK") {
+                return true
             }
         }
         catch (e: Throwable) {
-            return "err " + e.message
+            return false
         }
-        return "Err 未知错误 > Options.tk"
+        return false
     }
 }
