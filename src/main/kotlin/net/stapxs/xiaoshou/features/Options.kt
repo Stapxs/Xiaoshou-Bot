@@ -19,6 +19,7 @@ object Options {
      * @return
      **/
     fun readOpt(): Boolean {
+        optList = mutableListOf()
         println("> 开始初始化设置系统……")
         try {
             if(!File("Options.ini").exists()) {
@@ -30,8 +31,6 @@ object Options {
                 // 读取错误
                 return false
             }
-            // 初始化 GroupList
-            GroupList.initGroupList()
 
             return true
         }

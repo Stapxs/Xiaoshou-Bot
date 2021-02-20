@@ -16,7 +16,10 @@
 反正，反正很高兴认识你！
 ~~~
 
-## 获取 jar 包 &nbsp;&nbsp;&nbsp;&nbsp;<div style="margin-top:-30px;margin-left:120px;">![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/Stapxs/Xiaoshou-Bot?include_prereleases&style=for-the-badge)</div>
+## 获取 jar 包
+<br>
+
+![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/Stapxs/Xiaoshou-Bot?include_prereleases&style=for-the-badge)
 ~~~
 为了让你们看得整洁一点，晓狩才没有把乱七八糟的东西上传上来哦 ——
 要用自己研究去（大声
@@ -27,17 +30,23 @@
 ~~~
 看不懂看不懂，不要乱说话 ——
 ~~~
+
 在当前版本，你需要预先在 jar 同目录初始化 `Options.ini` 文件，结构如下：
-- qqID:QQ 账户
-- qqPassword:QQ 密码
-- masterID:最高权限主人的 QQ
+- [ 必须 ] qqID:QQ 账户
+- [ 必须 ] qqPassword:QQ 密码
+- [ 必须 ] masterID:最高权限主人的 QQ
 - botAPILink:一个用于记录 Bot 运行状况的 API 链接，GET 传参一个 JSON
-- groupList:名称,群号,群号（权限组，目前还没有分离，要更改请在 [这儿](https://github.com/Stapxs/Xiaoshou-Bot/blob/main/src/main/kotlin/net/stapxs/xiaoshou/xiaoshoucore/commands/CommandList.kt) 修改）
 - groupList:名称,群号,群号
-- nightTrigger:晚安功能的触发关键字（逗号隔开）
-- goNight:多次触发晚安功能的回复（逗号隔开）
+- groupList:名称,群号,群号
+- [ 必须 ] nightTrigger:晚安功能的触发关键字（逗号隔开）
+- [ 必须 ] goNight:多次触发晚安功能的回复（逗号隔开）
 
 同时你需要在 jar 同目录初始化 `Options/nightSays.ini` 空文件（因为我忘记自动创建了），这个文件用于自行添加的存储晚安问候的句子。
+
+接下来你需要将仓库里的 `Options/Commands.sconf` 下载到相同目录内，这个文件是命令权限表，你可以按照表上的结构自行编写：
+- 命令类型 | 命令名称 | 命令类型权限组（逗号隔开） | 命令帮助
+
+如果命令在此处删去，那么将在所有群组无权执行，`命令帮助` 填写 hidden 将在命令列表内隐藏，不影响执行，`命令权限组` 则是在 `Options.ini` 中的 groupList 名称。（此功能将在不久的将来更改）
 
 在运行时会在 jar 同目录自动生成 `LogNow.log` 日志文件，用于输出当前的运行日志，而 `mirai` 的输出依旧在控制台输出。
 
@@ -48,12 +57,12 @@
 什么我说观什么？我才没说呢，肯定是你听错了……
 你你你……我我我去看书了（
 ~~~
-具体的功能列表可以在 [这儿](https://github.com/Stapxs/Xiaoshou-Bot/blob/main/src/main/kotlin/net/stapxs/xiaoshou/xiaoshoucore/commands/CommandList.kt) 看见，懒得打字了（大声
+具体的功能列表可以在 `Options/Commands.sconf` 看见，懒得打字了（大声
 
 ## Bug Reply
 ~~~
-你说什么东西，我怎么看不明白？
-emmmmm我再去学学……
+你说什么东西，晓狩怎么看不明白？
+emmmmm 我再去学学……
 ~~~
 有 Bug 就直接往 [Issus](https://github.com/Stapxs/Xiaoshou-Bot/issues) 丢好了，不过会有人用晓狩么<span style="font-size:9px;">（超小声</span>
 
@@ -68,3 +77,14 @@ emmmmm我再去学学……
 - [ ] 完整的 Wiki 获取功能
 - [ ] 丘丘人语言翻译
 - [ ] lib 图片库上传 / 获取
+
+## API 和 开源项目
+~~~
+晓狩才不会白拿鱼干不说呢！
+~~~
+以下是 Xiaoshou 已存在功能用到的全部 API ，如果你是 API 作者并且 `不希望` 在晓狩中用到，那么可以发起 [Issus](https://github.com/Stapxs/Xiaoshou-Bot/issues) 请求删除。
+
+- [Pixiv 图片下载](https://pixiv.cat)
+- [Cat 猫猫图片库](https://thiscatdoesnotexist.com)
+- [Dog 狗砸图片库](https://dog.ceo)
+- [Fox 狐狸图片库](https://foxrudor.de)

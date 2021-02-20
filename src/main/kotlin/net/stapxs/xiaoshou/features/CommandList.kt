@@ -24,6 +24,7 @@ object CommandList {
     **/
     fun read(): Boolean {
         try {
+            comList = mutableListOf()
             if(!file.exists()) {
                 // 未找到设置文件……
                 Log.addLog("xiaoshou", "没有找到命令列表！")

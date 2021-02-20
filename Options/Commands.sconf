@@ -1,4 +1,4 @@
-/ | lib | DHWGroups | 操作晓狩图片存储库-/lib getpic <存储库名>-[文件名]-lib upload <图片名> to <存储库名> pic <图片>-lib new <存储库名>
+/ | lib | DHWGroups | 操作晓狩图片存储库-/lib getpic <存储库名>/[文件名]-/lib upload <图片名> to <存储库名> pic <图片>-/lib new <存储库名>
 / | wiki | DHWGroups,PdsGroups
 / | night | DHWGroups,PdsGroups | 晚安问候设置-/night add <要添加的语句>-/night all-/night del <要删除的行号>
 / | getpic | DHWGroups,PdsGroups | 下载网络图片-/getpic <图片链接>

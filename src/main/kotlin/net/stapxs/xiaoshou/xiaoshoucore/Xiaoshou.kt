@@ -9,6 +9,7 @@ import net.mamoe.mirai.message.data.MessageSource.Key.quote
 import net.mamoe.mirai.message.data.content
 import net.stapxs.xiaoshou.exit
 import net.stapxs.xiaoshou.features.CommandList
+import net.stapxs.xiaoshou.features.GroupList
 import net.stapxs.xiaoshou.features.Log
 import net.stapxs.xiaoshou.features.Options
 import java.io.File
@@ -31,6 +32,8 @@ object Xiaoshou {
             exitProcess(-1)
         }
         Log.addLog("opt", "指令列表读取初始化完成！")
+        // 初始化 GroupList 权限组
+        GroupList.initGroupList()
 
         var run = true
         // 群组
@@ -145,6 +148,47 @@ object Xiaoshou {
             }
         }
         return "Err > Xiaoshou.kt > fun sendImange > 未知的错误！"
+    }
+
+    /**
+     * @Author Stapxs
+     * @Description Xiaoshou 控制台指令
+     * @Date 下午 08:22 2021/2/20
+     * @Param
+     * @return
+    **/
+    fun controlRun(commands: List<String>): Boolean {
+        when(commands[0]) {
+            // 重新加载文件
+            "reload" -> {
+                when(commands[1]) {
+                    "commands" -> {
+                        // 初始化指令列表
+                        if(!CommandList.read()) {
+                            Log.printErr("指令列表文件不存在或读取错误。")
+                            exit = true
+                            exitProcess(-1)
+                        }
+                        Log.addLog("opt", "指令列表读取初始化完成！")
+                        return true
+                    }
+                    "groups" -> {
+                        // TODO 由于目前 GroupList 依旧依附 Options.ini 暂时需要同时刷新 Options
+                        // 初始化设置
+                        if(!Options.readOpt()) {
+                            Log.printErr("设置文件不存在或读取错误。")
+                            exit = true
+                            exitProcess(-1)
+                        }
+                        Log.addLog("opt", "设置读取初始化完成！")
+                        // 初始化 GroupList 权限组
+                        GroupList.initGroupList()
+                        return true
+                    }
+                }
+            }
+        }
+        return false
     }
 
 }

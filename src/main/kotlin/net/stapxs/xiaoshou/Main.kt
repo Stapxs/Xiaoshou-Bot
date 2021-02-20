@@ -11,7 +11,7 @@ import java.util.*
 import kotlin.system.exitProcess
 
 // 版本号
-const val sysVersion = "Dev-0.5.22-2"
+const val sysVersion = "Dev-0.5.23-2"
 // 全局 Json 反序列化 Gson
 val gson = Gson()
 // 退出标识
@@ -62,21 +62,42 @@ private fun controlRun(msg: String): String {
     if(msg.indexOf(" > ") <= 0) {
         return "指令格式错误 > 缺少 Bot 对象"
     }
-    val Bot = getBot(msg.substring(0, msg.indexOf(" > ")))
-    val BotName = msg.substring(0, msg.indexOf(" > "))
-    val commands = msg.substring(msg.indexOf(" > ") + 3).split(" ")
-    if(Bot == null && BotName != "all") {
+    val bot = getBot(msg.substring(0, msg.indexOf(" > ")))
+    val botName: String = msg.substring(0, msg.indexOf(" > "))
+    val commands: List<String> = msg.substring(msg.indexOf(" > ") + 3).split(" ")
+    if(bot == null && botName != "all") {
         return "执行错误 > 目标 Bot 不存在"
     }
+
+    // TODO 在此处添加其他机器人的非全局指令，优先执行非全局指令
+    when(botName) {
+        "xiaoshou" -> if(Xiaoshou.controlRun(commands))return "OK"
+    }
+    // TODO 全局指令
     when(commands[0]) {
         "exit" -> {
-            exitBot(BotName)
-            if(BotName == "all") {
+            exitBot(botName)
+            if(botName == "all") {
                 exit = true
             }
             return "OK"
         }
+        "reload" -> {
+            when(commands[1]) {
+                "options" -> {
+                    // 初始化设置
+                    if(!Options.readOpt()) {
+                        Log.printErr("设置文件不存在或读取错误。")
+                        exit = true
+                        exitProcess(-1)
+                    }
+                    Log.addLog("opt", "设置读取初始化完成！")
+                    return "OK"
+                }
+            }
+        }
     }
+
     return "执行错误 > 指令不存在"
 }
 
