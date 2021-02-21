@@ -178,6 +178,9 @@ object SSUserClass {
      * @return
     **/
     fun mergeStringList(list: MutableList<String>, start: Int, end: Int, add: String): String {
+        if(start == end) {
+            return list[start]
+        }
         if(start < 0 || end < 0 || start >= end || end > list.count() - 1) {
             return "Err > SSUserClass.kt > fun mergeStringList > 输入值不规范"
         }
