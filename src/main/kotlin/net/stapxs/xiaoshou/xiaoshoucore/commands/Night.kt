@@ -102,21 +102,19 @@ object Night {
         }
         val nights = Options.read(file)
         for(night in nights) {
-            return if(night.optName.toLong() == id) {
+            if(night.optName.toLong() == id) {
                 if(Options.set(file, nights, night.optName, night.optValue + "/$say")) {
-                    "记住啦"
+                    return "记住啦"
                 } else {
-                    "啊呀没记住呢 XD"
-                }
-            } else {
-                if(Options.set(file, nights, id.toString(), say)) {
-                    "记住啦"
-                } else {
-                    "啊呀没记住呢 XD"
+                    return "啊呀没记住呢 XD"
                 }
             }
         }
-        return "Err > Night.kt > fun add > 未知错误"
+        if(Options.set(file, nights, id.toString(), say)) {
+            return "记住啦"
+        } else {
+            return "啊呀没记住呢 XD"
+        }
     }
 
     fun nightJump(command: MutableList<String>, id: Long): String {
