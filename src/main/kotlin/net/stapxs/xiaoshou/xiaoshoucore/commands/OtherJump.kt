@@ -1,5 +1,6 @@
 package net.stapxs.xiaoshou.xiaoshoucore.commands
 
+import kotlinx.coroutines.Dispatchers.Main
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.message.data.content
 import net.stapxs.xiaoshou.features.CommandList
@@ -41,5 +42,12 @@ suspend fun OtherJump(event: GroupMessageEvent) {
             ImgGetter.pixiv.getASend(event.message.content, event)
             return
         }
+    }
+
+    // 控制台指令
+    if(event.sender.id.toString() == Options.getOpt("masterID")) {
+        // 执行控制台指令
+        net.stapxs.xiaoshou.Main.controlRun(event.message.content)
+        return
     }
 }

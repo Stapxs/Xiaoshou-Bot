@@ -8,10 +8,7 @@ import net.mamoe.mirai.message.data.At
 import net.mamoe.mirai.message.data.MessageSource.Key.quote
 import net.mamoe.mirai.message.data.content
 import net.stapxs.xiaoshou.exit
-import net.stapxs.xiaoshou.features.CommandList
-import net.stapxs.xiaoshou.features.GroupList
-import net.stapxs.xiaoshou.features.Log
-import net.stapxs.xiaoshou.features.Options
+import net.stapxs.xiaoshou.features.*
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -185,6 +182,11 @@ object Xiaoshou {
                         GroupList.initGroupList()
                         return true
                     }
+                }
+            }
+            "reset" -> {
+                when(commands[1]) {
+                    "nightStorage" -> GloStorage.NightStorage = mutableListOf()
                 }
             }
         }

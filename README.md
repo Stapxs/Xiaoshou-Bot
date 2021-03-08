@@ -17,8 +17,6 @@
 ~~~
 
 ## 获取 jar 包
-<br>
-
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/Stapxs/Xiaoshou-Bot?include_prereleases&style=for-the-badge)
 ~~~
 为了让你们看得整洁一点，晓狩才没有把乱七八糟的东西上传上来哦 ——
@@ -34,6 +32,7 @@
 在当前版本，你需要预先在 jar 同目录初始化 `Options.ini` 文件，结构如下：
 - [ 必须 ] qqID:QQ 账户
 - [ 必须 ] qqPassword:QQ 密码
+- device:登录的设备类型，可以是 Phone，Pad，Watch
 - [ 必须 ] masterID:最高权限主人的 QQ
 - botAPILink:一个用于记录 Bot 运行状况的 API 链接，GET 传参一个 JSON
 - groupList:名称,群号,群号
@@ -76,7 +75,7 @@ emmmmm 我再去学学……
 - [X] 炸鱼
 - [ ] 完整的 Wiki 获取功能
 - [ ] 丘丘人语言翻译
-- [ ] lib 图片库上传 / 获取
+- [x] lib 图片库上传 / 获取
 
 ## API 和 开源项目
 ~~~

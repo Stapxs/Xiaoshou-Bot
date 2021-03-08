@@ -44,61 +44,66 @@ suspend fun main() {
     // 启动控制台事件处理
     while (!exit){
         val command = readLine().toString()
-        val back = controlRun(command)
+        val back = Main.controlRun(command)
         if(back != "OK") {
             Log.printErr("执行控制台指令错误 > $back")
         }
     }
 }
 
-/**
- * @Author Stapxs
- * @Description 控制台指令执行
- * @Date 下午 03:41 2021/2/20
- * @Param
- * @return
-**/
-private fun controlRun(msg: String): String {
-    if(msg.indexOf(" > ") <= 0) {
-        return "指令格式错误 > 缺少 Bot 对象"
-    }
-    val bot = getBot(msg.substring(0, msg.indexOf(" > ")))
-    val botName: String = msg.substring(0, msg.indexOf(" > "))
-    val commands: List<String> = msg.substring(msg.indexOf(" > ") + 3).split(" ")
-    if(bot == null && botName != "all") {
-        return "执行错误 > 目标 Bot 不存在"
-    }
+object Main {
 
-    // TODO 在此处添加其他机器人的非全局指令，优先执行非全局指令
-    when(botName) {
-        "xiaoshou" -> if(Xiaoshou.controlRun(commands))return "OK"
-    }
-    // TODO 全局指令
-    when(commands[0]) {
-        "exit" -> {
-            exitBot(botName)
-            if(botName == "all") {
-                exit = true
-            }
-            return "OK"
+    /**
+     * @Author Stapxs
+     * @Description 控制台指令执行
+     * @Date 下午 03:41 2021/2/20
+     * @Param
+     * @return
+     **/
+    fun controlRun(msg: String): String {
+        if (msg.indexOf(" > ") <= 0) {
+            return "指令格式错误 > 缺少 Bot 对象"
         }
-        "reload" -> {
-            when(commands[1]) {
-                "options" -> {
-                    // 初始化设置
-                    if(!Options.readOpt()) {
-                        Log.printErr("设置文件不存在或读取错误。")
-                        exit = true
-                        exitProcess(-1)
+        val bot = getBot(msg.substring(0, msg.indexOf(" > ")))
+        val botName: String = msg.substring(0, msg.indexOf(" > "))
+        val commands: List<String> = msg.substring(msg.indexOf(" > ") + 3).split(" ")
+        if (bot == null && botName != "all") {
+            return "执行错误 > 目标 Bot 不存在"
+        }
+
+        // TODO 在此处添加其他机器人的非全局指令，优先执行非全局指令
+        when (botName) {
+            "xiaoshou" -> if (Xiaoshou.controlRun(commands)) return "OK"
+        }
+        // TODO 全局指令
+        when (commands[0]) {
+            "exit" -> {
+                exitBot(botName)
+                if (botName == "all") {
+                    exit = true
+                    exitProcess(0)
+                }
+                return "OK"
+            }
+            "reload" -> {
+                when (commands[1]) {
+                    "options" -> {
+                        // 初始化设置
+                        if (!Options.readOpt()) {
+                            Log.printErr("设置文件不存在或读取错误。")
+                            exit = true
+                            exitProcess(-1)
+                        }
+                        Log.addLog("opt", "设置读取初始化完成！")
+                        return "OK"
                     }
-                    Log.addLog("opt", "设置读取初始化完成！")
-                    return "OK"
                 }
             }
         }
+
+        return "执行错误 > 指令不存在"
     }
 
-    return "执行错误 > 指令不存在"
 }
 
 /**
