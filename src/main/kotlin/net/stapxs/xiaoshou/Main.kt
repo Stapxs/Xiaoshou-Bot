@@ -11,7 +11,7 @@ import java.util.*
 import kotlin.system.exitProcess
 
 // 版本号
-const val sysVersion = "Dev-0.5.23-2"
+const val sysVersion = "Dev-0.5.24-2"
 // 全局 Json 反序列化 Gson
 val gson = Gson()
 // 退出标识
@@ -133,9 +133,16 @@ suspend fun mainRun() {
 
     // 启动 Mirai Bot
     Log.addLog("bot", "正在启动 Bot ……")
+    var deviceType = BotConfiguration.MiraiProtocol.ANDROID_PAD
+    when(Options.getOpt("device")) {
+        "Phone" -> deviceType = BotConfiguration.MiraiProtocol.ANDROID_PHONE
+        "Pad" -> deviceType = BotConfiguration.MiraiProtocol.ANDROID_PAD
+        "Watch" -> deviceType = BotConfiguration.MiraiProtocol.ANDROID_WATCH
+        else -> Log.addLog("bot", "启动设备类型不存在，默认使用 PAD。")
+    }
     val miraiBot = BotFactory.newBot(qqID, qqPassword) {
         fileBasedDeviceInfo()
-        protocol = BotConfiguration.MiraiProtocol.ANDROID_PHONE
+        protocol = deviceType
     }.alsoLogin()    // 登录
     // 启动 Xiaoshou Core 事件监听
     Thread{Xiaoshou.xiaoshouCore(miraiBot)}.run()
