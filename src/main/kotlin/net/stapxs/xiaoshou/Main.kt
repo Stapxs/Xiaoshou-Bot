@@ -11,7 +11,7 @@ import java.util.*
 import kotlin.system.exitProcess
 
 // 版本号
-const val sysVersion = "Dev-0.5.24-2"
+const val sysVersion = "Dev-0.5.3-2"
 // 全局 Json 反序列化 Gson
 val gson = Gson()
 // 退出标识

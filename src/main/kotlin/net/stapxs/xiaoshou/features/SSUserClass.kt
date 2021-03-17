@@ -199,4 +199,25 @@ object SSUserClass {
         return out.substring(0, out.length - add.length)
     }
 
+    /**
+     * @Author Stapxs
+     * @Description 转半角的函数(DBC case)
+     * @Date 下午 07:52 2021/3/10
+     * @Param
+     * @return
+    **/
+    fun toDBC(input: String): String {
+        val c = input.toCharArray()
+        for (i in c.indices) {
+            if (c[i].toInt() == 12288) {
+                //全角空格为12288，半角空格为32
+                c[i] = 32.toChar()
+                continue
+            }
+            if (c[i].toInt() in 65281..65374) //其他字符半角(33-126)与全角(65281-65374)的对应关系是：均相差65248
+                c[i] = (c[i].toInt() - 65248).toChar()
+        }
+        return String(c)
+    }
+
 }

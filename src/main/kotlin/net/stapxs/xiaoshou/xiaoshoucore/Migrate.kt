@@ -27,6 +27,7 @@ object Migrate {
                             "help" -> sendHelp(event, msg[0])
                             "?" -> sendHelp(event, msg[0])
                             "night" -> Xiaoshou.sendMessage("Group", Night.nightJump(msg, event.sender.id), event)
+                            "doing" -> Xiaoshou.sendMessage("Group", Doing.Get(event, msg[0]), event)
                         }
                     }
                     "." -> {

@@ -5,6 +5,7 @@
 / | say | All | 让晓狩说点什么？-/say 栗子
 / | help | All | 就是 help！使用 /help all 查看所有。-/help fox
 / | ? | All | hidden
+/ | doing | DHWGroups,PdsGroups | 在晓狩 Doing API 内获取某个人-/doing <名字>-/doing <QQ号>
 . | 林槐语录 | All | 抽一条林槐语录-.林槐语录
 . | lhyl | All | hidden
 . | lhyl-a | DHWGroups | hidden

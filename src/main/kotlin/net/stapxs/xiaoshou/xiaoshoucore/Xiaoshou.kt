@@ -88,17 +88,14 @@ object Xiaoshou {
             }
             // SS!
             try {
-                if (event.message.content.substring(0, 2).equals("ss", true) ||
-                    event.message.content.substring(0, 2) == "晓狩" ) {
-                    if ((event.message.content[2] == '!' || event.message.content[2] == '！') &&
-                        event.message.content.length == 3
-                    ) {
-                        subject.sendMessage(sender.nick + event.message.content[2])
+                var msgSS = SSUserClass.toDBC(event.message.content)
+                msgSS = msgSS.replace(" ", "")
+                if (msgSS.substring(0, 2).equals("ss", true) || msgSS.substring(0, 2) == "晓狩" ) {
+                    if ((msgSS[2] == '!' || msgSS[2] == '！') && msgSS.length == 3) {
+                        subject.sendMessage(sender.nick + msgSS[2])
                     }
-                    else if (event.message.content[2] == '~' &&
-                        event.message.content.length == 3
-                    ) {
-                        subject.sendMessage(sender.nick + event.message.content[2] + " 要抱抱 ——")
+                    else if (msgSS[2] == '~' && msgSS.length == 3) {
+                        subject.sendMessage(sender.nick + msgSS[2] + " 要抱抱 ——")
                     }
                 }
             } catch (e: Throwable) { }

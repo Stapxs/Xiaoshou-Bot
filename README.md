@@ -35,6 +35,7 @@
 - device:登录的设备类型，可以是 Phone，Pad，Watch
 - [ 必须 ] masterID:最高权限主人的 QQ
 - botAPILink:一个用于记录 Bot 运行状况的 API 链接，GET 传参一个 JSON
+- doingAPILink:doing 功能的 API 地址，Doing 功能的相关软件在 Stapxs/SS-Warehouse/tree/main/WhatIsSteveDoing/Web
 - groupList:名称,群号,群号
 - groupList:名称,群号,群号
 - [ 必须 ] nightTrigger:晚安功能的触发关键字（逗号隔开）
