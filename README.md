@@ -1,3 +1,5 @@
+移步至 https://github.com/Stapxs/Xiaoshou-Core
+<hr>
 # 晓狩
 你好……人类，这是晓狩。很高兴认识你！
 
