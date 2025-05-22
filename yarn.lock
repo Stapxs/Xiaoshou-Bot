@@ -1211,7 +1211,14 @@ minecraft-folder-path@^1.2.0:
   resolved "https://registry.npmmirror.com/minecraft-folder-path/-/minecraft-folder-path-1.2.0.tgz#08ea450bfb20dbb02cf6e1470864e2f0d652e477"
   integrity sha512-qaUSbKWoOsH9brn0JQuBhxNAzTDMwrOXorwuRxdJKKKDYvZhtml+6GVCUrY5HRiEsieBEjCUnhVpDuQiKsiFaw==
 
-minecraft-protocol@^1.51.0:
+"minecraft-protocol-forge@https://github.com/PrismarineJS/node-minecraft-protocol-forge":
+  version "1.1.0"
+  resolved "https://github.com/PrismarineJS/node-minecraft-protocol-forge#d723566a5627b220a99e136b4b9cbc453c62e8bc"
+  dependencies:
+    minecraft-protocol "^1.43.1"
+    protodef "^1.0.0"
+
+minecraft-protocol@^1.43.1, minecraft-protocol@^1.51.0:
   version "1.57.0"
   resolved "https://registry.npmmirror.com/minecraft-protocol/-/minecraft-protocol-1.57.0.tgz#ecf5ea1394deb9eac45a675e7d883400974ffe35"
   integrity sha512-ZRCBVRMnZ3rA6YpPUj+QGZRdZZOOIVphUyGE4unHVzgpmI5KTtI/Wgpnct+9CSelSz1Iw5iCwZwOTAZ0TmDCsA==
@@ -1592,7 +1599,7 @@ protodef-validator@^1.3.0:
   dependencies:
     ajv "^6.5.4"
 
-protodef@^1.17.0, protodef@^1.18.0:
+protodef@^1.0.0, protodef@^1.17.0, protodef@^1.18.0:
   version "1.19.0"
   resolved "https://registry.npmmirror.com/protodef/-/protodef-1.19.0.tgz#39482efe31ad5f8e58f627f85b347942d9a85f9e"
   integrity sha512-94f3GR7pk4Qi5YVLaLvWBfTGUIzzO8hyo7vFVICQuu5f5nwKtgGDaeC1uXIu49s5to/49QQhEYeL0aigu1jEGA==

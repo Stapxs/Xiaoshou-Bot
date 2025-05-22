@@ -72,7 +72,7 @@ if (configSelect.length == 0) {
 
     const logger = log4js.getLogger('index')
     logger.info('当前数据库文件：' + dbFile)
-    logger.info('当前日志等级：' + config.log)
+    logger.info('当前日志等级：' + log4js.getLogger('default').level)
 
     const client = new OnebotClient({ address: config.address, token: config.token },
         {
@@ -106,7 +106,7 @@ if (configSelect.length == 0) {
                         if (cmd) {
                             cmd.call(msgEvent, client, head, msg, echoList)
                         } else {
-                            logger.error(`未注册的消息类型 ${head} - ${data}`)
+                            logger.debug(`未注册的消息类型 ${head} - ${data}`)
                         }
                     }
                 } catch (e) {

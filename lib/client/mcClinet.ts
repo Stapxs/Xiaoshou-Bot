@@ -1,5 +1,7 @@
 import mineflayer, { BotOptions } from 'mineflayer'
 import mc from 'minecraft-protocol'
+// @ts-expect-error: minecraft-protocol-forge has no types
+import { autoVersionForge } from 'minecraft-protocol-forge'
 import log4js from 'log4js'
 
 export default class McClient {
@@ -8,14 +10,10 @@ export default class McClient {
     public static isOp = true
     public spawn = false
 
-    private clientLogger = log4js.getLogger('client')
-    private botLogger = log4js.getLogger('bot')
+    private logger = log4js.getLogger('minecraft')
     private config
 
-    constructor(config: any, logLevel: string) {
-        this.clientLogger.level = logLevel
-        this.botLogger.level = logLevel
-        this.clientLogger.info('正在初始化 mineflayer 服务 ……')
+    constructor(config: any) {
         // 配置初始值
         this.config = config
         this.config.username = this.config.username ?? 'Player'
@@ -34,31 +32,32 @@ export default class McClient {
             this.config.auth = 'mojang'
             this.config.client = mc.createClient(this.config as BotOptions)
         }
-    }
-
-    public join(span: (bot: mineflayer.Bot | null) => void): void {
-        this.botLogger.info('正在加入 Minecraft 服务器 ……')
-        // 初始连接配置
-        this.bot = mineflayer.createBot(this.config as BotOptions)
-        this.bot.addListener('end', (str: string) => {
-            this.botLogger.info('从 Minecraft 服务器断开连接：' + str)
-            this.spawn = false
-            this.bot = null
-        })
-        this.bot.once('spawn', () => {
-            this.spawn = true
-            span(this.bot)
-        })
+        // Forge 登录模式
+        if(this.config.version == false) {
+            this.config.client = this.config.client ?? mc.createClient(this.config as BotOptions)
+            autoVersionForge(this.config.client)
+        }
     }
 
     public joinAsync(): Promise<mineflayer.Bot> {
-        this.botLogger.info('正在加入 Minecraft 服务器 ……')
+        this.logger.info('正在加入 Minecraft 服务器 ……')
         // 初始连接配置
         this.bot = mineflayer.createBot(this.config as BotOptions)
         this.bot.addListener('end', (str: string) => {
-            this.botLogger.info('从 Minecraft 服务器断开连接：' + str)
+            this.logger.info('从 Minecraft 服务器断开连接：' + str)
             this.spawn = false
             this.bot = null
+        })
+        this.bot.addListener('error', (err: Error) => {
+            this.logger.error('连接 Minecraft 服务器失败：' + err.message)
+            this.spawn = false
+            this.bot = null
+        })
+        this.bot._client.on('end', (str) => {
+            this.logger.debug('client 断开连接：' + str)
+        })
+        this.bot._client.on('error', (err) => {
+            this.logger.error('client 连接失败：' + err.message)
         })
 
         return new Promise((resolve, reject) => {
@@ -69,6 +68,7 @@ export default class McClient {
                 })
 
                 this.bot.once('error', (err) => {
+                    this.logger.error('连接 Minecraft 服务器失败：' + err.message)
                     reject(err)
                 })
             } else {
@@ -79,7 +79,7 @@ export default class McClient {
 
 
     public leave() {
-        this.botLogger.info('正在退出 Minecraft 服务器 ……')
+        this.logger.info('正在退出 Minecraft 服务器 ……')
         this.bot?.quit()
     }
 

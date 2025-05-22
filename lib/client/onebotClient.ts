@@ -83,7 +83,7 @@ export default class OnebotClient {
             msg = await msg
         }
         if(typeof msg === 'string') {
-            if(msg.length > 50) {
+            if(msg.length > 100 || msg.split('\n').length > 7) {
                 // 文本过长，转为伪造合并转发发送
                 msg = { messages: [{ type: 'node',
                     data: {

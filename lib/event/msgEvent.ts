@@ -7,7 +7,7 @@ import { getCommand } from '../utils/decorators/commandDec'
 import CommandEvent from './commandEvent'
 
 export default class MsgEvent {
-    private logger = log4js.getLogger('msg')
+    private logger = log4js.getLogger('message')
     private commandEvent = new CommandEvent()
 
     @msgEvent('message')
@@ -21,14 +21,14 @@ export default class MsgEvent {
             const commandSub = argv._.slice(0, -1).join('.') + '.*'
 
             const cmd = getCommand(command) ?? getCommand(commandSub)
-            this.logger.debug(`执行命令: ${command}/${commandSub}`)
+            this.logger.debug(`执行命令: ${msg.group_id ?? msg.user_id} - ${command}/${commandSub}`)
             if (cmd) {
                 const says = await cmd.call(this.commandEvent, client, msg, argv)
                 if (says) {
                     client.sendMsg(says, msg)
                 }
             } else {
-                this.logger.error(`未注册的命令 ${command} - ${msg.raw_message}`)
+                this.logger.debug(`未注册的命令 ${command} - ${msg.raw_message}`)
             }
         }
     }

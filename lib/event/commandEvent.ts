@@ -1,5 +1,5 @@
 import McClient from '../client/mcClinet'
-import { config, db } from '../index'
+import { db } from '../index'
 import OnebotClient from '../client/onebotClient'
 import log4js from 'log4js'
 import * as MessagereUtil from '../utils/msg'
@@ -7,6 +7,7 @@ import { command, getAllCommands } from '../utils/decorators/commandDec'
 import { getMcCommandEvent } from '../utils/decorators/mcDec'
 import McCommandEvent from './mcCommandEvent'
 import yargs from 'yargs'
+import { resolveSrvToIPs } from '../utils/http'
 
 export default class CommandEvent {
     private logger = log4js.getLogger('command')
@@ -39,6 +40,30 @@ export default class CommandEvent {
         return data
     }
 
+    @command('mc.player', '获取玩家列表')
+    async mcPlayer(client: OnebotClient, msg: { [key: string]: any }) {
+        const id = msg.group_id
+        if(!id) {
+            return 'mc 指令只能在群组中使用'
+        }
+        const mcConfig = this.loadMcConfig(id)
+        if (!mcConfig) {
+            return '请先配置 Minecraft 服务器'
+        }
+        const bot = await this.joinMcWorld(this.mcClientMap[id], client, msg, mcConfig)
+        if (bot) {
+            const playerList = bot.players
+            let result = '> 玩家列表\n\n'
+            for (const name in playerList) {
+                const player = playerList[name]
+                result += `  ${player.displayName}\n`
+            }
+            result += '\n 共有 ' + Object.keys(playerList).length + ' 个玩家在线'
+            return result
+        }
+        return '获取玩家列表失败'
+    }
+
     @command('mc.scoreboard', '获取计分板数据')
     @command('mc.scoreboard.*')
     async mcScoreboard(client: OnebotClient, msg: { [key: string]: any }, args: { [key: string]: any }) {
@@ -46,6 +71,9 @@ export default class CommandEvent {
             return '请指定计分板名称或使用 list 来获取计分板列表'
         }
         const id = msg.group_id
+        if(!id) {
+            return 'mc 指令只能在群组中使用'
+        }
         const mcConfig = this.loadMcConfig(id)
         if (!mcConfig) {
             return '请先配置 Minecraft 服务器'
@@ -82,7 +110,7 @@ export default class CommandEvent {
                     describe: '验证方式 (custom / mojang)', type: 'string', default: 'mojang', demandOption: true
                 })
                 .option('version', {
-                    describe: '版本，默认自动检查', type: 'string'
+                    describe: '版本，默认自动检查；你可以填写 "forge" 来进入 forge 服务器特殊模式', type: 'string'
                 })
                 .option('auth_server', {
                     describe: 'Yggdrasil auth server 地址（custom 认证时使用）', type: 'string'
@@ -105,7 +133,7 @@ export default class CommandEvent {
                 .option('port', {
                     describe: '服务器端口', type: 'number', default: 25565
                 })
-                .epilog('为了防止密码泄露，本命令只支持在私聊使用。')
+                .epilog('为了防止密码泄露，本命令只支持在私聊使用。注意：本功能只支持原版、 Forge 服务器以及部分插件服务器，其他服务器可能无法使用。')
             const data = await cli.getHelp()
             return data
         } else {
@@ -164,9 +192,19 @@ export default class CommandEvent {
     }
 
     private async joinMcWorld(mcClient: McClient, client: OnebotClient, msg: { [key: string]: any }, mcConfig: { [key: string]: any }) {
+        const logger = log4js.getLogger('minecraft')
         let needJoin = false
         if (!mcClient) {
-            mcClient = new McClient(mcConfig, config.log)
+            const ips = await resolveSrvToIPs('_minecraft._tcp.' + mcConfig.host)
+            if(ips.length > 0) {
+                mcConfig.host = ips[0].ip
+                mcConfig.port = ips[0].port
+            }
+            if(mcConfig.version == 'forge') {
+                mcConfig.version = false
+            }
+            mcClient = new McClient(mcConfig)
+            this.mcClientMap[msg.group_id] = mcClient
             needJoin = true
         } else if (!mcClient.isInGame()) {
             needJoin = true
@@ -177,9 +215,9 @@ export default class CommandEvent {
                 bot.waitForChunksToLoad()
                 bot.addListener('message', (jsonMsg: any) => {
                     if (jsonMsg.text != undefined && jsonMsg.text != '') {
-                        this.logger.debug(MessagereUtil.replaceMsg(jsonMsg.text))
+                        logger.debug(MessagereUtil.replaceMsg(jsonMsg.text))
                     } else {
-                        this.logger.debug(jsonMsg.toString())
+                        logger.debug(jsonMsg.toString())
                     }
 
                     try {
@@ -194,11 +232,11 @@ export default class CommandEvent {
                             if (says) {
                                 client.sendMsg(says, msg)
                             }
-                        } else {
-                            this.logger.debug('未注册的 Minecraft 指令类型：' + type + '\n' + JSON.stringify(jsonMsg))
+                        } else if(type) {
+                            logger.debug('未注册的 Minecraft 指令类型：' + type + '\n' + JSON.stringify(jsonMsg))
                         }
                     } catch (e) {
-                        this.logger.error(e, '处理 Minecraft 消息错误：' + JSON.stringify(jsonMsg))
+                        logger.error(e, '处理 Minecraft 消息错误：' + JSON.stringify(jsonMsg))
                     }
                 })
                 bot.addListener('death', () => {

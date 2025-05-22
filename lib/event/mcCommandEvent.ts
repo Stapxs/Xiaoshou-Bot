@@ -3,6 +3,12 @@ import { mcCommandEvent } from '../utils/decorators/mcDec'
 import { Bot } from 'mineflayer'
 
 export default class McCommandEvent {
+    @mcCommandEvent('command.unknown.command')
+    async unknownCommand(bot: Bot, client: OnebotClient, msg: { [key: string]: any }, data: { [key: string]: any }) {
+        const commandBack = await bot.awaitMessage(/<--\[HERE\]$/)
+        return '执行指令失败：' + commandBack + '\n\n> 可能是指令错误或没有执行权限。'
+    }
+
     @mcCommandEvent('commands.scoreboard.objectives.list.success')
     scoreboardList(bot: Bot, client: OnebotClient, msg: { [key: string]: any }, data: {[key: string]: any}) {
         const allList = data.json.with[1].extra
@@ -41,6 +47,8 @@ export default class McCommandEvent {
                 result += `  ${item.name} - ${item.value}\n`
             }
         }
+        // 取消设置 sidebar
+        bot.chat('/scoreboard objectives setdisplay sidebar')
         return result
     }
 }
