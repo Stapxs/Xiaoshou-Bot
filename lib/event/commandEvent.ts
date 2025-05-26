@@ -3,16 +3,28 @@ import { db } from '../index'
 import OnebotClient from '../client/onebotClient'
 import log4js from 'log4js'
 import * as MessagereUtil from '../utils/msg'
-import { command, getAllCommands } from '../utils/decorators/commandDec'
+import { bindCommandHandlers, command, getAllCommands } from '../utils/decorators/commandDec'
 import { getMcCommandEvent } from '../utils/decorators/mcDec'
 import McCommandEvent from './mcCommandEvent'
 import yargs from 'yargs'
 import { resolveSrvToIPs } from '../utils/http'
+import { permission } from '../utils/decorators/commandPermissionDec'
 
 export default class CommandEvent {
+    private _ = new McCommandEvent()
+    
     private logger = log4js.getLogger('command')
-    private mcCommandEvent = new McCommandEvent()
     private mcClientMap: { [key: string]: McClient } = {}
+
+    constructor() {
+        bindCommandHandlers(this)
+    }
+
+    @command('hi', '测试命令')
+    @permission('master')
+    async hiCommand() {
+        return '你好人类，这是晓狩！'
+    }
 
     @command('mc')
     async mc() {
@@ -228,9 +240,9 @@ export default class CommandEvent {
 
                         const cmd = getMcCommandEvent(type)
                         if (cmd) {
-                            const says = cmd.call(this.mcCommandEvent, bot, client, msg, jsonMsg)
+                            const says = cmd.handler(bot, client, msg, jsonMsg)
                             if (says) {
-                                client.sendMsg(says, msg)
+                                client.sendChatMsg(says, msg)
                             }
                         } else if(type) {
                             logger.debug('未注册的 Minecraft 指令类型：' + type + '\n' + JSON.stringify(jsonMsg))

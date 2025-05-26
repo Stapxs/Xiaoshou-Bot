@@ -1,10 +1,15 @@
 import OnebotClient from '../client/onebotClient'
-import { mcCommandEvent } from '../utils/decorators/mcDec'
+import { bindMcCommandHandlers, mcCommandEvent } from '../utils/decorators/mcDec'
 import { Bot } from 'mineflayer'
 
 export default class McCommandEvent {
+
+    constructor() {
+        bindMcCommandHandlers(this)
+    }
+
     @mcCommandEvent('command.unknown.command')
-    async unknownCommand(bot: Bot, client: OnebotClient, msg: { [key: string]: any }, data: { [key: string]: any }) {
+    async unknownCommand(bot: Bot) {
         const commandBack = await bot.awaitMessage(/<--\[HERE\]$/)
         return '执行指令失败：' + commandBack + '\n\n> 可能是指令错误或没有执行权限。'
     }

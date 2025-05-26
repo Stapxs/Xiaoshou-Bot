@@ -74,7 +74,18 @@ export default class OnebotClient {
 
     // ============================================================
 
-    public async sendMsg(msg: { [key: string]: any } | string, from: { [key: string]: any }) {
+    /**
+     * 发送消息到群组或私聊
+     * @param msg 消息内容，可以是字符串或消息对象
+     * @param from 消息发送者信息，包含 `user_id` 和 `group_id` 等字段
+     * @returns Promise<void>
+     */
+    public async sendChatMsg(msg: { [key: string]: any } | string, from: { [key: string]: any } | null) {
+        if(from === null) {
+            const commandLogger = log4js.getLogger('command')
+            commandLogger.info('\n' + msg)
+            return
+        }
         let action = 'send_msg'
         if(typeof msg === 'object' &&
             msg !== null &&
@@ -103,7 +114,8 @@ export default class OnebotClient {
                 group_id: from.group_id,
                 user_id: from.user_id,
                 ...msg
-            }
+            },
+            echo: 'clientSendMsg'
         }
         const finalStr = JSON.stringify(data)
         this.send(finalStr)
