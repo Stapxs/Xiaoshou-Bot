@@ -21,7 +21,7 @@ export default class CommandEvent {
     }
 
     @command('hi', '测试命令')
-    @permission('master')
+    @permission('dhw')
     async hiCommand() {
         return '你好人类，这是晓狩！'
     }

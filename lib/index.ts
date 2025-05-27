@@ -8,6 +8,7 @@ import path from 'path'
 import readline from 'readline'
 import { getMsgEvent } from './utils/decorators/msgDec'
 import { runCommand } from './utils/msg'
+import DataGetter from './utils/data'
 
 // 初始化数据库 ========================
 const dbFile = path.join(__dirname, '../database.db')
@@ -16,6 +17,7 @@ if (!fs.existsSync(dbFile)) {
     fs.writeFileSync(dbFile, '', { encoding: 'utf-8' })
 }
 
+export let data = {} as DataGetter
 export const db = new database(dbFile)
 initDatabase(db)
 
@@ -182,6 +184,7 @@ if (botConfig.length == 0) {
             }
         }
     })
+    data = new DataGetter(client)
 
     client.connect()
 }

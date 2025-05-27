@@ -6,7 +6,7 @@ import OnebotClient from '../client/onebotClient'
 import CommandEvent from '../event/commandEvent'
 import SysCommandEvent from '../event/system/sysCommandEvent'
 import { getPermission } from './decorators/commandPermissionDec'
-import { botConfig } from '..'
+import { botConfig, db, data as runtime } from '..'
 
 new SysCommandEvent()
 new CommandEvent()
@@ -47,46 +47,91 @@ export async function runCommand(client: OnebotClient, str: string, msg: { [key:
 
         // 获取命令和权限
         const cmd = getCommand(command) || getCommand(commandSub)
-        const permission = getPermission(command) || getPermission(commandSub)
+        const permissions = getPermission(command) || getPermission(commandSub)
 
         // 检查权限
         const senderId = msg?.sender?.user_id
+        const groupId = msg?.group_id
+        const userId = msg?.user_id
         let allowed = true
-        switch (permission) {
-            case 'master': {
-                const masterId = botConfig.find((item) => {
-                    return item.key === 'admin'
-                })?.value
-                if(senderId == undefined || senderId !== Number(masterId)) {
-                    allowed = false
+        for(const permission of permissions) {
+            switch (permission) {
+                case 'master': {
+                    const masterId = botConfig.find((item) => {
+                        return item.key === 'admin'
+                    })?.value
+                    if(senderId == undefined || senderId !== Number(masterId)) {
+                        client.sendChatMsg(`你没有 ${permission} 权限执行此命令`, msg)
+                        allowed = false
+                    }
+                    break
                 }
-                break
-            }
-            case 'admin': {
-                // PS：admin 权限只在群组中生效
+                case 'admin':
+                case 'owner': {
+                    if(groupId) {
+                        const groupMembers = await runtime.data.groupMembers.fetch(String(groupId))
+                        if(groupMembers && groupMembers.length > 0) {
+                            const senderInfo = groupMembers.find((item: any) => item.user_id === senderId)
+                            const role = senderInfo?.role || 'member'
+                            if(permission != role) {
+                                client.sendChatMsg(`你没有 ${permission} 权限执行此命令`, msg)
+                                allowed = false
+                            }
+                        }
+                    }
+                    break
+                }
+                case 'private': {
+                    if(groupId) {
+                        client.sendChatMsg('此命令只能在私聊中使用', msg)
+                        allowed = false
+                    }
+                    break
+                }
+                case 'group': {
+                    if(!groupId) {
+                        client.sendChatMsg('此命令只能在群组中使用', msg)
+                        allowed = false
+                    }
+                    break
+                }
+                default: {
+                    if(permission && permission != '') {
+                        // 进行权限组判断
+                        const idData = db.prepare('SELECT id FROM permission WHERE group_name = ?').all(permission)
+                        if(idData.length > 0) {
+                            const ids = idData.map((item: any) => item.id)
+                            if(!ids.includes(String(userId)) && !ids.includes(String(groupId))) {
+                                logger.debug(`用户或群组 ${userId}/${senderId} 没有权限组 ${permission} 权限`)
+                                allowed = false
+                            }
+                        } else {
+                            logger.debug(`未找到权限组 ${permission}`)
+                            allowed = false
+                        }
+                    }
+                }
             }
         }
 
         // 执行命令
-        if(!allowed) {
-            client.sendChatMsg('你没有权限执行此命令，命令需求: ' + permission, msg)
+        if(msg) {
+            logger.debug(`执行命令: ${msg.group_id ?? msg.user_id} - ${command}/${commandSub}`)
         } else {
-            if(msg) {
-                logger.debug(`执行命令: ${msg.group_id ?? msg.user_id} - ${command}/${commandSub}`)
-            } else {
-                logger.debug(`执行命令: command - ${command}/${commandSub}`)
-            }
-            if (cmd) {
+            logger.debug(`执行命令: command - ${command}/${commandSub}`)
+        }
+        if (cmd) {
+            if(allowed) {
                 const says = await cmd.handler(client, msg, argv)
                 if (says) {
                     client.sendChatMsg(says, msg)
                 }
+            }
+        } else {
+            if(msg) {
+                logger.debug(`未注册的命令 ${command} - ${msg.raw_message}`)
             } else {
-                if(msg) {
-                    logger.debug(`未注册的命令 ${command} - ${msg.raw_message}`)
-                } else {
-                    logger.debug(`未注册的命令 ${command} - ${str}`)
-                }
+                logger.debug(`未注册的命令 ${command} - ${str}`)
             }
         }
     } catch (err) {

@@ -4,6 +4,14 @@ CREATE TABLE IF NOT EXISTS bot_config (
   value TEXT NOT NULL                                    -- 值
 );
 
+-- 详细权限，id 可以是群 ID 或用户 ID；一个 ID 可以属于多个权限组
+CREATE TABLE IF NOT EXISTS permission (
+  id          TEXT NOT NULL,                            -- 群 ID 或用户 ID
+  group_name TEXT NOT NULL,                             -- 权限组名称
+  created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,       -- 创建时间
+  PRIMARY KEY (id, group_name)                          -- 联合主键，确保每个 ID 在每个权限组中唯一
+);
+
 -- Minecraft 服务器连接配置
 CREATE TABLE IF NOT EXISTS mc_config (
   group_id       TEXT PRIMARY KEY,                      -- 十位以上数字，使用 TEXT 可避免整数溢出

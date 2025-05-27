@@ -5,17 +5,16 @@ interface OnebotClientConfig {
     address: string
     token: string
 }
-
 interface OnebotClientEvents {
     onOpen?: () => void
     onMessage?: (data: string) => void
     onError?: (error: Error) => void
     onClose?: (code: number, reason: string) => void
 }
-
 export default class OnebotClient {
     private config: OnebotClientConfig
     private client: WebSocket | undefined
+    private pending = new Map()
     private logger = log4js.getLogger('websocket')
 
     private events: Required<OnebotClientEvents> = {
@@ -35,12 +34,25 @@ export default class OnebotClient {
         this.client = new WebSocket(url, { timeout: 5000 })
 
         this.client.on('open', () => this.events.onOpen())
-        this.client.on('message', (data) =>
-            this.events.onMessage(typeof data === 'string' ? data : data.toString())
-        )
+        this.client.on('message', (data) => {
+            let isResolved = false
+            try {
+                const json = JSON.parse(data.toString())
+                const echo = json.echo
+                if (echo && this.pending.has(echo)) {
+                    isResolved = true
+                    const { resolve } = this.pending.get(echo)
+                    this.pending.delete(echo)
+                    resolve(json)
+                }
+            } catch (err) {
+                this.logger.error('Message parse error:', err)
+            }
+            if(!isResolved)
+                this.events.onMessage(typeof data === 'string' ? data : data.toString())
+        })
         this.client.on('error', (error: Error) => {
             this.events.onError(error)
-            this.close()
         })
         this.client.on('close', (code: number, reason: Buffer) => {
             this.events.onClose(code, reason.toString())
@@ -119,5 +131,31 @@ export default class OnebotClient {
         }
         const finalStr = JSON.stringify(data)
         this.send(finalStr)
+    }
+
+    /**
+     * 发送同步请求
+     * @param payload 请求负载
+     * @returns Promise<any>
+     */
+    public sendMsgSync(payload: { [key: string]: any }): Promise<any> {
+        return new Promise((resolve, reject) => {
+            const echo = payload.echo
+
+            if (this.client?.readyState !== WebSocket.OPEN) {
+                reject(new Error('WebSocket is not open'))
+                return
+            }
+
+            this.pending.set(echo, { resolve, reject })
+            this.send(JSON.stringify(payload))
+
+            setTimeout(() => {
+                if (this.pending.has(echo)) {
+                    this.pending.delete(echo)
+                    reject(new Error('Timeout waiting for response'))
+                }
+            }, 5000)
+        })
     }
 }
