@@ -127,11 +127,11 @@ if (botConfig.length == 0) {
                 logger.info('websocket 已连接')
                 client.send(JSON.stringify({
                     action: 'get_version_info',
-                    echo: 'getVersionInfo'
+                    echo: 'get_version_info'
                 }))
                 client.send(JSON.stringify({
                     action: 'get_login_info',
-                    echo: 'getLoginInfo'
+                    echo: 'get_login_info'
                 }))
             },
             onMessage: (data) => {

@@ -127,7 +127,7 @@ export default class OnebotClient {
                 user_id: from.user_id,
                 ...msg
             },
-            echo: 'clientSendMsg'
+            echo: 'client_send_msg'
         }
         const finalStr = JSON.stringify(data)
         this.send(finalStr)

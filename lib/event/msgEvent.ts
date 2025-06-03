@@ -22,15 +22,15 @@ export default class MsgEvent {
         // do nothing
     }
 
-    @msg('getVersionInfo')
+    @msg('get_version_info')
     versionInfo(client: OnebotClient, name: string, msg: { [key: string]: any }) {
         this.logger.info(`Bot 信息：${msg.data.app_name} ${msg.data.app_version}`)
     }
-    @msg('getLoginInfo')
+    @msg('get_login_info')
     loginInfo(client: OnebotClient, name: string, msg: { [key: string]: any }) {
         this.logger.info(`登录信息：${msg.data.user_id} - ${msg.data.nickname}`)
     }
-    @msg('clientSendMsg')
+    @msg('client_send_msg')
     clientSendMsg(client: OnebotClient, name: string, msg: { [key: string]: any }) {
         this.logger.debug(`发送消息：${msg.data.message_id}`)
     }
